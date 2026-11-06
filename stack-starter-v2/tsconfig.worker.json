@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2022",
+      "WebWorker"
+    ],
+    "types": []
+  },
+  "include": [
+    "src/motion/vision.worker.ts",
+    "src/shared/vision-worker.ts"
+  ]
+}

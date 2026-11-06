@@ -1,0 +1,53 @@
+Flock and Flick 接口附件 v1.1
+日期 2026-11-07
+
+配套开发手册为职责、行为与验收依据。本附件提供可复制的数据定义、启动参数和联调用例；不包含已实现的游戏或识别器。
+
+contract.ts      正式 TypeScript 公共合同；协议为 1.1。
+vision-worker.ts  视觉 Worker 内部消息类型；独立协议为 1.0。
+defaults.json    初始设计与调参值。不是实测性能或已验证的手势阈值。
+fixtures.json    标准命令序列、拒绝场景、冰壶计分样例和恢复场景。
+
+开发者 A 负责游戏、键鼠适配器、命令校验、回执和上下文发布。
+开发者 B 负责 createMotionController、颜色识别、校准、平滑、手势解释与反馈。
+shared 合同由 A 维护，接口语义修改经双方确认；各自内部阈值可独立调整并记录。
+
+初始允许命令
+inactive     无
+select       SELECT_BALL
+adjust       PREVIEW_SHOT ARM_SHOT CANCEL_SHOT
+armed        FIRE CANCEL_SHOT
+resolving    无
+inputEnabled 为 false 时 allowedCommands 必须为空。
+
+新会话使用新 sessionId；contextId 在阶段、玩家、预览源、输入门控或选项库存变化时递增。普通预览、反馈和渲染帧不递增 contextId。
+previewSource 只指定连续预览来源。键鼠 SELECT_BALL、ARM_SHOT、FIRE、CANCEL_SHOT 在手套方式下仍然有效。PREVIEW_SHOT 仅接受 previewSource；motion 命令还须 previewSource=motion 且 motionEnabled=true。
+inputEnabled 表示游戏允许局内操作，motionEnabled 独立表示体感就绪。相机丢失不能全局禁用键鼠。左/右/上/下键或显式键鼠接管可切换预览源；仅移动鼠标不自动抢占。
+默认 motionActionsEnabled 仅包含 SELECT_BALL 和 PREVIEW_SHOT；锁定、发射和取消默认使用键鼠。需要实验完整手套操作时分别启用 ARM_SHOT、FIRE、CANCEL_SHOT。未启用的体感命令拒绝 ACTION_DISABLED，键鼠对应操作始终保留。fixtures 的纯体感序列显式启用了全部动作。
+命令时钟来自 host.now，使用同一页面 performance.now 的毫秒值；禁止 Date.now 与其混用。
+游戏顺序校验：结构与版本、会话、离散命令去重、上下文、来源策略、动作开关、门控、阶段、时效、载荷、库存和预览。只有 motion 请求依赖体感就绪；键鼠离散操作不受 motionActionsEnabled 限制。
+离散命令结果保留至会话结束。相同 commandId 且内容相同返回原回执并标记 duplicate，不重复改变状态；同编号不同内容拒绝 ID_REUSE。PREVIEW_SHOT 仅采纳当前上下文中较新的样本。
+PREVIEW_SHOT 实时更新游戏维护的 previewShot 和投掷引导。ARM_SHOT 载荷为空，原子复制当前 previewShot 到 lockedShot，不扣库存；键鼠和体感均可选择锁定时刻。体感锁定前必须先提交当前帧 PREVIEW_SHOT。FIRE 只读取游戏端 lockedShot，原子创建一球并扣一次库存。CANCEL_SHOT 在 armed 返回 adjust，在 adjust 返回 select。
+所有核心操作通过 host.submit；菜单、暂停、校准和重试由普通界面按钮控制，不属于手套命令。
+游戏 setContext 是阶段变化的唯一权威通知；回执不能被识别器用于自行推进游戏状态。
+反馈的 rearmed 表示当前会话、回合、玩家和预览源已完成中立姿态确认。它在正常阶段变化及开门时保持，遇到追踪失效、校准或上述身份变化时清除。B 在 motionEnabled=false 时仍须追踪和报告反馈。
+游戏不能仅因阶段或门控造成 contextId 变化就将上一条仍新鲜的追踪质量视为掉线；命令执行则必须已有同一新上下文的反馈。B 每帧先 report 再 submit。新 session、turn、玩家或输入源必须清除旧反馈。
+上述反馈检查只适用于 motion 命令。motionEnabled 从 true 变 false 的瞬间解除当时的锁定；后续无效帧不重复取消键鼠主动锁定。界面明确显示冻结的最后有效预览，键鼠可主动确认或接管调整。
+双方同帧提交锁定或发射时按调用顺序执行；第一条接受后 contextId 改变，第二条旧上下文请求失效。预览更新本身不改变 contextId。
+
+颜色识别只需输出语义命令。原始像素、掩码、手套坐标与 HSV 参数留在交互模块内部。
+若更换成其他识别算法，只要上述语义与生命周期不变，游戏接口可以继续使用。
+
+联调时先用键鼠完成游戏，再以模拟 host 测体感，随后用 fixtures.json 对照真实连接。
+用例仅代表应满足的结果，必须在真实实现和现场摄像头上另行执行验收。
+
+v1.1 的变化
+五种命令和既有键鼠/手套行为保持原义。新增 VISION_INIT_FAILED、WORKER_FAILED、FRAME_TIMEOUT 反馈原因，统一切换到协议 1.1；旧 1.0 请求按 VERSION_MISMATCH 拒绝。
+createMotionController 仍是主线程对象。只有像素分割和候选提取在 Worker，Worker 不调用 host、不持有 Phaser Scene、不决定 FIRE。
+帧带 generation、sessionId、contextId、turnId、playerId、source、configVersion、frameId、sampleAtMs。身份、配置、上下文不匹配或超过 250ms 时丢弃。
+sampleAtMs 在主线程采样时取 host.now()，Worker 原样回传；不能以收到结果的时间替换。Worker 的 performance.now() 只计算自己的耗时差。
+任一时刻最多一帧在途，忙时跳过采样。配置需等 CONFIGURED；初始化需等 READY。停止时终止 Worker、关闭媒体轨道，迟到结果不得恢复输入。
+坐标契约：Worker 返回原始未镜像像素坐标。主线程只执行一次 u=1-x/W、v=y/W，校准与显示采用同一规则。
+官方 OpenCV 8 位 HSV 内部 H 为 0..179，S/V 为 0..255；项目配置仍使用 H 度数 0..360 和 S/V 0..1，由 B 在内部换算。
+物理只由 Phaser 内置 Matter world.step 固定推进，autoUpdate=false；不安装另一套 matter-js，不启动 Matter.Runner。
+配置包中的 stack-starter-v2 只验证技术链，尚不实现完整游戏、完整公共命令接收器或正式手势识别。

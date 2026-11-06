@@ -1,0 +1,44 @@
+﻿GitHub 仓库使用说明：本仓库已包含交接包的展开内容，无需另找同名 ZIP。
+从根目录 README.md 或 AGENT-交接说明-v2.0.md 开始；下文保留原交接包的内容说明。
+
+Flock and Flick v2.0 双人开发交接包
+
+新版完整包：Flock-and-Flick-开发交接包-v2.0.zip
+旧版“技术配置与接口”ZIP 保留；转交时优先使用新版完整包。
+先完整解压，再打开文件。
+
+入口
+  AGENT-交接说明-v2.0.md：阅读顺序、已完成/待开发边界、任务卡入口。
+
+tasks/
+  README.md：任务索引、两人实施顺序、文件归属与公共验收规则。
+  A1–A4：游戏侧四张任务卡。
+  B1–B3：体感侧三张任务卡。
+  J1：混合输入联调与现场验收。
+  验收记录模板.md：执行后按真实结果填写。
+
+两本手册（均放在解压后的根目录）
+  Flock-and-Flick-开发手册-v2.0.docx / .md
+  Flock-and-Flick-技术栈配置手册-v2.0.docx / .md
+  Markdown 与 Word 正文一致，额外提供目录和交接入口链接。
+
+interface-v1.1/
+  公共接口、Worker 内部消息类型、参数初值、联调样例与阅读说明。
+
+stack-starter-v2/
+  可安装和启动的技术验证工程，含 package-lock 与官方 OpenCV 本地文件。
+  AI-配置任务说明.txt：可以复制给协助配置的 AI。
+  配置记录模板.txt：两位开发者分别填写。
+  验证记录-20261107.txt：之前实际验证的范围与未验证项目。
+  README.txt：启动命令。
+
+阅读顺序
+Agent 先读 AGENT-交接说明-v2.0.md，再按职责阅读两本手册和接口文件。
+当前电脑按配置手册第 3 节；其他电脑按第 4 节独立自查。
+确认 Node 24.x，在 stack-starter-v2（包含 package.json）执行 npm ci。
+Windows PowerShell 使用 npm.cmd；其他系统使用 npm。
+
+本包不含 node_modules、dist、生成的 Worker 或本机日志。
+dev / build 自动预构建 Worker；每台电脑按同一锁文件安装依赖。
+现有工程用于验证技术链，尚非最终游戏。真实摄像头与手套仍需本人验证。
+八张执行任务卡已编写；功能实施与验收仍待进行，不能把卡片的预期结果当作测试记录。

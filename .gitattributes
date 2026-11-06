@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.docx binary
+*.zip binary
+# Preserve the exact bytes used by the lockfile and vendor integrity checks.
+stack-starter-v2/package-lock.json -text
+stack-starter-v2/public/vendor/opencv/** -text

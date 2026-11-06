@@ -1,0 +1,9 @@
+{
+  "version": "4.13.0",
+  "file": "opencv-4.13.0.js",
+  "sha256": "63366510248adf3a7eddf3e793dd825404efb7df3749f4d6f8557c7fa4ca8aa0",
+  "source": "https://github.com/opencv/opencv/releases/download/4.13.0/opencv-4.13.0-docs.zip",
+  "archivePath": "js/bin/opencv.js",
+  "license": "Apache-2.0",
+  "distribution": "official OpenCV documentation release"
+}

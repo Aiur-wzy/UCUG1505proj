@@ -1,0 +1,218 @@
+{
+  "contractVersion": "1.1",
+  "defaultMotionActionsEnabled": [
+    "SELECT_BALL",
+    "PREVIEW_SHOT"
+  ],
+  "fullMotionActionsEnabled": [
+    "SELECT_BALL",
+    "PREVIEW_SHOT",
+    "ARM_SHOT",
+    "FIRE",
+    "CANCEL_SHOT"
+  ],
+  "status": "Initial design and tuning values, not measured performance",
+  "world": {
+    "width": 1000,
+    "height": 700,
+    "launch": {
+      "x": 500,
+      "y": 610
+    },
+    "launchCandidatesX": [
+      500,
+      450,
+      550,
+      400,
+      600,
+      350,
+      650,
+      300,
+      700,
+      250,
+      750,
+      200,
+      800,
+      150,
+      850,
+      100,
+      900,
+      50,
+      950
+    ],
+    "house": {
+      "x": 500,
+      "y": 180,
+      "radius": 130
+    },
+    "ballRadius": 18,
+    "scoreEpsilon": 1
+  },
+  "physics": {
+    "stepMs": 16.666666666666668,
+    "maxCatchUpSteps": 5,
+    "launchSpeedMin": 3,
+    "launchSpeedMax": 13,
+    "frictionAir": 0.02,
+    "restitution": 0.7,
+    "gravityScale": 0,
+    "settleLinearSpeed": 0.05,
+    "settleAngularSpeed": 0.01,
+    "settleHoldMs": 500,
+    "diagnosticTimeoutMs": 20000,
+    "provider": "Phaser.Physics.Matter",
+    "autoUpdate": false,
+    "standaloneMatterRunner": false
+  },
+  "effects": {
+    "repel": {
+      "triggerLowSpeedMs": 200,
+      "durationMs": 250,
+      "radius": 120,
+      "deltaVelocityPerTick": 0.12,
+      "maxActivations": 1
+    }
+  },
+  "inventory": {
+    "normal": 3,
+    "repel": 1
+  },
+  "soloLevels": [
+    {
+      "id": "L1",
+      "zoneRadii": [
+        180,
+        110,
+        45
+      ],
+      "zonePoints": [
+        1,
+        2,
+        3
+      ],
+      "target": 3,
+      "obstacles": []
+    },
+    {
+      "id": "L2",
+      "zoneRadii": [
+        180,
+        110,
+        45
+      ],
+      "zonePoints": [
+        1,
+        2,
+        3
+      ],
+      "target": 4,
+      "obstacles": []
+    },
+    {
+      "id": "L3",
+      "zoneRadii": [
+        180,
+        110,
+        45
+      ],
+      "zonePoints": [
+        1,
+        2,
+        3
+      ],
+      "target": 5,
+      "obstacles": []
+    },
+    {
+      "id": "L4",
+      "zoneRadii": [
+        180,
+        110,
+        45
+      ],
+      "zonePoints": [
+        1,
+        2,
+        3
+      ],
+      "target": 6,
+      "obstacles": []
+    },
+    {
+      "id": "L5",
+      "zoneRadii": [
+        180,
+        110,
+        45
+      ],
+      "zonePoints": [
+        1,
+        2,
+        3
+      ],
+      "target": 7,
+      "obstacles": []
+    }
+  ],
+  "vision": {
+    "width": 320,
+    "height": 240,
+    "targetHz": 20,
+    "hueHalfWidthDeg": 18,
+    "saturationMin": 0.4,
+    "valueMin": 0.25,
+    "minimumColorSeparationDeg": 70,
+    "minBlobPixels": 50,
+    "maxBlobFrameRatio": 0.12,
+    "maxCentroidJumpWidthRatio": 0.12,
+    "reacquireHoldMs": 500,
+    "ewmaTauMs": 90,
+    "backend": "opencv-wasm-worker",
+    "opencvVersion": "4.13.0",
+    "maxInFlight": 1,
+    "initTimeoutMs": 15000,
+    "frameWatchdogMs": 1000,
+    "statsEveryMs": 1000,
+    "maskPreviewMaxHz": 5
+  },
+  "calibration": {
+    "sampleMs": 1000,
+    "minimumCloseDistanceWidthRatio": 0.08,
+    "minimumSpanWidthRatio": 0.12,
+    "selectionXMin": 0.15,
+    "selectionXMax": 0.85
+  },
+  "gesture": {
+    "selectionHoldMs": 600,
+    "selectionHysteresis01": 0.04,
+    "armHoldMs": 700,
+    "armAngleRangeDeg": 4,
+    "armPowerRange01": 0.06,
+    "powerStartR": 0.3,
+    "releaseStartDeltaR": 0.08,
+    "releaseR": 0.12,
+    "releaseHoldMs": 100,
+    "releaseTransitionMaxMs": 800,
+    "rearmNeutralMaxR": 0.2,
+    "rearmHoldMs": 500,
+    "armedTimeoutMs": 5000,
+    "previewMaxHz": 20,
+    "cancelSelectionHoldMs": 600
+  },
+  "transport": {
+    "maxSampleAgeMs": 250,
+    "futureToleranceMs": 50,
+    "maxFeedbackAgeMs": 250
+  },
+  "qualityTargets": {
+    "gameFps": 50,
+    "visionHzMinimum": 15,
+    "inputLatencyMedianMs": 150,
+    "inputLatencyP95Ms": 250,
+    "selectionSuccessesOutOf20": 18,
+    "releaseSuccessesOutOf20": 18,
+    "zeroUnintendedShotsMinutes": 3,
+    "keyboardDuelMatches": 3,
+    "motionDuelMatches": 2
+  }
+}

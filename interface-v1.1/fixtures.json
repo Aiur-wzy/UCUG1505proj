@@ -1,0 +1,1496 @@
+{
+  "protocolVersion": "1.1",
+  "notes": "Synthetic fixtures and expected outcomes. Not evidence that the game or recognition is implemented. Unless specified, motion feedback is current, calibrated, valid, rearmed and ready for player A. Flow contexts are supplied fixtures; an implementation must publish them itself. Independent cases start with an empty command cache.",
+  "happyPath": [
+    {
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 10,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "select",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "SELECT_BALL"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": null,
+        "previewShot": null,
+        "lockedShot": null,
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "receiveAtMs": 1010,
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 10,
+        "commandId": "motion-demo-001-1",
+        "source": "motion",
+        "atMs": 1000,
+        "type": "SELECT_BALL",
+        "payload": {
+          "ballTypeId": "normal"
+        }
+      },
+      "expected": {
+        "accepted": true,
+        "phase": "adjust",
+        "contextId": 11,
+        "stockDelta": 0
+      }
+    },
+    {
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "adjust",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": null,
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "receiveAtMs": 1110,
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "commandId": "motion-demo-001-2",
+        "source": "motion",
+        "atMs": 1100,
+        "type": "PREVIEW_SHOT",
+        "payload": {
+          "aimDeg": 12,
+          "power01": 0.6
+        }
+      },
+      "expected": {
+        "accepted": true,
+        "phase": "adjust",
+        "contextId": 11,
+        "stockDelta": 0
+      }
+    },
+    {
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "adjust",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": null,
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "receiveAtMs": 1805,
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "commandId": "motion-demo-001-3",
+        "source": "motion",
+        "atMs": 1800,
+        "type": "PREVIEW_SHOT",
+        "payload": {
+          "aimDeg": 12,
+          "power01": 0.6
+        }
+      },
+      "expected": {
+        "accepted": true,
+        "phase": "adjust",
+        "contextId": 11,
+        "stockDelta": 0
+      }
+    },
+    {
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "adjust",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": null,
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "receiveAtMs": 1810,
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "commandId": "motion-demo-001-4",
+        "source": "motion",
+        "atMs": 1800,
+        "type": "ARM_SHOT",
+        "payload": {}
+      },
+      "expected": {
+        "accepted": true,
+        "phase": "armed",
+        "contextId": 12,
+        "stockDelta": 0
+      }
+    },
+    {
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "armed",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "receiveAtMs": 2110,
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "commandId": "motion-demo-001-5",
+        "source": "motion",
+        "atMs": 2100,
+        "type": "FIRE",
+        "payload": {}
+      },
+      "expected": {
+        "accepted": true,
+        "phase": "resolving",
+        "contextId": 13,
+        "stockDelta": -1,
+        "spawnCount": 1
+      }
+    },
+    {
+      "receiveAtMs": 2120,
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "commandId": "motion-demo-001-5",
+        "source": "motion",
+        "atMs": 2100,
+        "type": "FIRE",
+        "payload": {}
+      },
+      "expected": {
+        "accepted": true,
+        "duplicate": true,
+        "stockDelta": 0,
+        "spawnCount": 0,
+        "note": "Return cached original receipt; no second mutation."
+      }
+    }
+  ],
+  "rejectionCases": [
+    {
+      "id": "old-context",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "armed",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "commandId": "motion-demo-001-90",
+        "source": "motion",
+        "atMs": 2100,
+        "type": "FIRE",
+        "payload": {}
+      },
+      "receiveAtMs": 2110,
+      "expectedReason": "STALE_CONTEXT",
+      "expectedStockDelta": 0,
+      "expectedSpawnCount": 0
+    },
+    {
+      "id": "fire-before-armed",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "adjust",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": null,
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "commandId": "motion-demo-001-91",
+        "source": "motion",
+        "atMs": 2100,
+        "type": "FIRE",
+        "payload": {}
+      },
+      "receiveAtMs": 2110,
+      "expectedReason": "WRONG_PHASE",
+      "expectedStockDelta": 0,
+      "expectedSpawnCount": 0
+    },
+    {
+      "id": "stale-sample",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "armed",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "commandId": "motion-demo-001-92",
+        "source": "motion",
+        "atMs": 1000,
+        "type": "FIRE",
+        "payload": {}
+      },
+      "receiveAtMs": 1400,
+      "expectedReason": "STALE_INPUT",
+      "expectedStockDelta": 0,
+      "expectedSpawnCount": 0
+    },
+    {
+      "id": "out-of-range-power",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "adjust",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": null,
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "commandId": "motion-demo-001-93",
+        "source": "motion",
+        "atMs": 2000,
+        "type": "PREVIEW_SHOT",
+        "payload": {
+          "aimDeg": 12,
+          "power01": 1.2
+        }
+      },
+      "receiveAtMs": 2010,
+      "expectedReason": "INVALID_PAYLOAD",
+      "expectedStockDelta": 0,
+      "expectedSpawnCount": 0
+    },
+    {
+      "id": "other-source",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "armed",
+        "activePlayerId": "A",
+        "previewSource": "keyboard",
+        "inputEnabled": true,
+        "motionEnabled": false,
+        "allowedCommands": [
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "commandId": "motion-demo-001-94",
+        "source": "motion",
+        "atMs": 2000,
+        "type": "FIRE",
+        "payload": {}
+      },
+      "receiveAtMs": 2010,
+      "expectedReason": "INACTIVE_SOURCE",
+      "expectedStockDelta": 0,
+      "expectedSpawnCount": 0
+    },
+    {
+      "id": "disabled-gate",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "armed",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": false,
+        "motionEnabled": true,
+        "allowedCommands": [],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "commandId": "motion-demo-001-95",
+        "source": "motion",
+        "atMs": 2000,
+        "type": "FIRE",
+        "payload": {}
+      },
+      "receiveAtMs": 2010,
+      "expectedReason": "INPUT_DISABLED",
+      "expectedStockDelta": 0,
+      "expectedSpawnCount": 0
+    },
+    {
+      "id": "empty-inventory",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 10,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "select",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "SELECT_BALL"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 0
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": null,
+        "previewShot": null,
+        "lockedShot": null,
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 10,
+        "commandId": "motion-demo-001-96",
+        "source": "motion",
+        "atMs": 2000,
+        "type": "SELECT_BALL",
+        "payload": {
+          "ballTypeId": "normal"
+        }
+      },
+      "receiveAtMs": 2010,
+      "expectedReason": "OUT_OF_STOCK",
+      "expectedStockDelta": 0,
+      "expectedSpawnCount": 0
+    },
+    {
+      "id": "motion-lock-disabled",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "adjust",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": null,
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "commandId": "motion-demo-001-97",
+        "source": "motion",
+        "atMs": 2000,
+        "type": "ARM_SHOT",
+        "payload": {}
+      },
+      "receiveAtMs": 2010,
+      "expectedReason": "ACTION_DISABLED",
+      "expectedStockDelta": 0,
+      "expectedSpawnCount": 0
+    }
+  ],
+  "scoringCases": [
+    {
+      "id": "one-side-only",
+      "house": {
+        "x": 500,
+        "y": 180,
+        "radius": 130
+      },
+      "epsilon": 1,
+      "balls": [
+        {
+          "id": "a1",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 530,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        },
+        {
+          "id": "a2",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 600,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        }
+      ],
+      "expectedScore": {
+        "A": 2,
+        "B": 0
+      }
+    },
+    {
+      "id": "two-before-rival",
+      "house": {
+        "x": 500,
+        "y": 180,
+        "radius": 130
+      },
+      "epsilon": 1,
+      "balls": [
+        {
+          "id": "a1",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 520,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        },
+        {
+          "id": "a2",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 550,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        },
+        {
+          "id": "a3",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 600,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        },
+        {
+          "id": "b1",
+          "ownerId": "B",
+          "typeId": "normal",
+          "x": 580,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        }
+      ],
+      "expectedScore": {
+        "A": 2,
+        "B": 0
+      }
+    },
+    {
+      "id": "nearest-tie",
+      "house": {
+        "x": 500,
+        "y": 180,
+        "radius": 130
+      },
+      "epsilon": 1,
+      "balls": [
+        {
+          "id": "a1",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 540,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        },
+        {
+          "id": "b1",
+          "ownerId": "B",
+          "typeId": "normal",
+          "x": 540.5,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        }
+      ],
+      "expectedScore": {
+        "A": 0,
+        "B": 0
+      }
+    },
+    {
+      "id": "empty-house",
+      "house": {
+        "x": 500,
+        "y": 180,
+        "radius": 130
+      },
+      "epsilon": 1,
+      "balls": [
+        {
+          "id": "a1",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 670,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        },
+        {
+          "id": "b1",
+          "ownerId": "B",
+          "typeId": "normal",
+          "x": 680,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        }
+      ],
+      "expectedScore": {
+        "A": 0,
+        "B": 0
+      }
+    },
+    {
+      "id": "touching-outer-ring",
+      "house": {
+        "x": 500,
+        "y": 180,
+        "radius": 130
+      },
+      "epsilon": 1,
+      "balls": [
+        {
+          "id": "a1",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 648,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        }
+      ],
+      "expectedScore": {
+        "A": 1,
+        "B": 0
+      }
+    },
+    {
+      "id": "just-outside-tolerance",
+      "house": {
+        "x": 500,
+        "y": 180,
+        "radius": 130
+      },
+      "epsilon": 1,
+      "balls": [
+        {
+          "id": "a1",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 649.1,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        }
+      ],
+      "expectedScore": {
+        "A": 0,
+        "B": 0
+      }
+    },
+    {
+      "id": "second-ball-ties-rival",
+      "house": {
+        "x": 500,
+        "y": 180,
+        "radius": 130
+      },
+      "epsilon": 1,
+      "balls": [
+        {
+          "id": "a1",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 510,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        },
+        {
+          "id": "a2",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 540.5,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        },
+        {
+          "id": "b1",
+          "ownerId": "B",
+          "typeId": "normal",
+          "x": 540,
+          "y": 180,
+          "radius": 18,
+          "inPlay": true
+        }
+      ],
+      "expectedScore": {
+        "A": 1,
+        "B": 0
+      }
+    }
+  ],
+  "hybridCases": [
+    {
+      "id": "keyboard-locks-motion-preview",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "adjust",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": null,
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "commandId": "keyboard-demo-001-101",
+        "source": "keyboard",
+        "atMs": 2000,
+        "type": "ARM_SHOT",
+        "payload": {}
+      },
+      "receiveAtMs": 2010,
+      "expected": {
+        "accepted": true,
+        "lockedShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        }
+      }
+    },
+    {
+      "id": "keyboard-fires-motion-lock",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "armed",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "commandId": "keyboard-demo-001-102",
+        "source": "keyboard",
+        "atMs": 2100,
+        "type": "FIRE",
+        "payload": {}
+      },
+      "receiveAtMs": 2110,
+      "expected": {
+        "accepted": true,
+        "spawnCount": 1,
+        "stockDelta": -1
+      }
+    },
+    {
+      "id": "keyboard-cancels-motion-lock",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "armed",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "command": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 12,
+        "commandId": "keyboard-demo-001-103",
+        "source": "keyboard",
+        "atMs": 2200,
+        "type": "CANCEL_SHOT",
+        "payload": {}
+      },
+      "receiveAtMs": 2210,
+      "expected": {
+        "accepted": true,
+        "phase": "adjust",
+        "stockDelta": 0
+      }
+    },
+    {
+      "id": "live-preview",
+      "context": {
+        "protocolVersion": "1.1",
+        "sessionId": "demo-001",
+        "contextId": 11,
+        "turnId": 1,
+        "scene": "play",
+        "phase": "adjust",
+        "activePlayerId": "A",
+        "previewSource": "motion",
+        "inputEnabled": true,
+        "motionEnabled": true,
+        "allowedCommands": [
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "CANCEL_SHOT"
+        ],
+        "motionActionsEnabled": [
+          "SELECT_BALL",
+          "PREVIEW_SHOT",
+          "ARM_SHOT",
+          "FIRE",
+          "CANCEL_SHOT"
+        ],
+        "ballOptions": [
+          {
+            "id": "normal",
+            "label": "普通球",
+            "remaining": 3
+          },
+          {
+            "id": "repel",
+            "label": "排斥球",
+            "remaining": 1
+          }
+        ],
+        "selectedBallId": "normal",
+        "previewShot": {
+          "aimDeg": 12,
+          "power01": 0.6
+        },
+        "lockedShot": null,
+        "limits": {
+          "aimMinDeg": -50,
+          "aimMaxDeg": 50,
+          "powerMin01": 0,
+          "powerMax01": 1
+        }
+      },
+      "commands": [
+        {
+          "protocolVersion": "1.1",
+          "sessionId": "demo-001",
+          "contextId": 11,
+          "commandId": "motion-demo-001-104",
+          "source": "motion",
+          "atMs": 3000,
+          "type": "PREVIEW_SHOT",
+          "payload": {
+            "aimDeg": -20,
+            "power01": 0.25
+          }
+        },
+        {
+          "protocolVersion": "1.1",
+          "sessionId": "demo-001",
+          "contextId": 11,
+          "commandId": "motion-demo-001-105",
+          "source": "motion",
+          "atMs": 3050,
+          "type": "PREVIEW_SHOT",
+          "payload": {
+            "aimDeg": 20,
+            "power01": 0.8
+          }
+        }
+      ],
+      "expected": "Both accepted; visible path, angle and power update without ARM_SHOT; contextId stays 11."
+    }
+  ],
+  "recoveryCases": [
+    {
+      "id": "lost-while-armed",
+      "before": "armed",
+      "event": "motionEnabled transitions true to false",
+      "expected": "clear lockedShot once; phase adjust; motionEnabled false; game inputEnabled remains true; new contextId; no stock deduction. Subsequent keyboard lock/fire remain available."
+    },
+    {
+      "id": "late-feedback",
+      "event": "feedback age > 250 ms",
+      "expected": "same handling as tracking loss; motion commands cannot fire; keyboard remains available"
+    },
+    {
+      "id": "lost-during-simulation",
+      "before": "resolving",
+      "event": "tracking loss",
+      "expected": "simulation and effects continue; next-turn motion input waits for recovery; keyboard remains available"
+    },
+    {
+      "id": "recovered",
+      "event": "valid calibrated pair for 500 ms and neutral pose for 500 ms",
+      "expected": "motion gate opens with new context; new gesture confirmation required; no automatic fire"
+    },
+    {
+      "id": "changed-duplicate",
+      "event": "same discrete commandId with different content",
+      "expected": "ID_REUSE; no mutation"
+    },
+    {
+      "id": "pending-effect",
+      "event": "birds are slow but a repel effect is pending",
+      "expected": "remain resolving; do not change turn or score"
+    }
+  ],
+  "workerCases": [
+    {
+      "id": "old-generation",
+      "incomingGeneration": 2,
+      "activeGeneration": 3,
+      "expected": "drop result, no feedback/command; release frame resources"
+    },
+    {
+      "id": "old-context",
+      "incomingContextId": 11,
+      "activeContextId": 12,
+      "expected": "drop semantic result; do not reset rearmed solely for normal phase change"
+    },
+    {
+      "id": "old-config",
+      "incomingConfigVersion": 1,
+      "activeConfigVersion": 2,
+      "expected": "drop result; wait for CONFIGURED version 2 before sending new frame"
+    },
+    {
+      "id": "old-frame",
+      "incomingFrameId": 7,
+      "lastAcceptedFrameId": 8,
+      "expected": "drop result; monotonically increasing frame IDs"
+    },
+    {
+      "id": "slow-result",
+      "sampleAtMs": 1000,
+      "receivedAtMs": 1400,
+      "expected": "drop result older than 250 ms; do not retimestamp at receipt"
+    },
+    {
+      "id": "one-in-flight",
+      "busy": true,
+      "newVideoFrame": true,
+      "expected": "skip capture; do not queue old frames"
+    },
+    {
+      "id": "worker-timeout",
+      "elapsedMs": 1001,
+      "expected": "disable motion, clear in-flight, terminate worker, offer retry; keyboard and physics keep working"
+    },
+    {
+      "id": "clock-origin",
+      "sampleAtMs": 2000,
+      "workerClockAtFinish": 80,
+      "expected": "atMs remains 2000; worker clock used only for elapsed processingMs"
+    }
+  ]
+}

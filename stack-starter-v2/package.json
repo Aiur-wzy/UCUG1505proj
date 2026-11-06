@@ -1,0 +1,29 @@
+{
+  "name": "flock-and-flick-stack-check",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0 <25"
+  },
+  "scripts": {
+    "dev": "npm run prepare:worker && vite",
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.worker.json && tsc -p tsconfig.tools.json",
+    "test": "vitest run",
+    "build": "npm run typecheck && npm run prepare:worker && vite build",
+    "preview": "vite preview",
+    "check:vendor": "node scripts/check-vendor.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "prepare:worker": "node scripts/build-worker.mjs",
+    "watch:worker": "node scripts/build-worker.mjs --watch"
+  },
+  "dependencies": {
+    "phaser": "4.2.1"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2",
+    "vite": "8.3.6",
+    "vitest": "5.1.0",
+    "@types/node": "24.10.0"
+  }
+}

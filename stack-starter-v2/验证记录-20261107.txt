@@ -1,0 +1,36 @@
+﻿Flock and Flick 技术配置包验证记录
+日期：2026-11-07
+范围：本配置包的工具链、最小物理页面、键盘演示、视觉 Worker 合成图。
+
+验证环境
+Windows x64；独立 Node 24.22.1 运行时；npm 10.8.1；headless Chrome。
+当前用户系统 Node 仍为 22.4.1。本次没有替换全局 Node。
+另一台电脑必须重新自查；此报告不能代替该电脑的结果。
+
+实际已完成
+PASS：按 package-lock.json 安装依赖；使用本次下载缓存执行 npm ci --offline。
+PASS：主线程、Worker、工具配置的 TypeScript 检查。
+PASS：七个冰壶计分边界测试。
+PASS：Worker 预构建与 Vite build。
+PASS：官方 OpenCV 文件哈希校验。
+PASS：doctor 的五个直接依赖版本匹配。
+PASS：开发服务 5173 和构建预览 4173 的八球物理场景。
+PASS：键盘实时预览、Enter 冻结、Esc 取消、Space 发射。
+PASS：两种服务下 OpenCV 合成图各找到一个颜色候选，中心符合预期。
+PASS：视觉 Worker 停止、重新启动；上述浏览器检查未捕获页面错误。
+
+构建提醒
+Phaser 主包超过 Vite 默认 500 kB 提醒阈值，构建退出为 0。
+该提醒不等于构建失败；正式项目按实际加载需求再评估拆包。
+
+未完成与边界
+真实摄像头授权/视频：未测试。
+真实手套、光照、人体动作、现场性能与延迟：未测试。
+正式菜单、关卡、库存/回合、公共命令接收器、校准与手势、双模式：待正式开发。
+fixtures.json 是验收样例；其中仅七个计分样例已实现为自动测试。
+文档中的性能与识别通过条件是后续验收目标，不是本次测得的结果。
+
+复现依据
+package-lock.json SHA-256：538bf8a77cd5ce7feafa2bde3af1d489a772a68080f7fad2e0f73feb724614ad
+OpenCV.js 4.13.0 SHA-256：63366510248adf3a7eddf3e793dd825404efb7df3749f4d6f8557c7fa4ca8aa0
+依赖：Phaser 4.2.1；TypeScript 7.0.2；Vite 8.3.6；Vitest 5.1.0；@types/node 24.10.0。
