@@ -238,7 +238,7 @@
     "keyboardDuelMatches": 3,
     "motionDuelMatches": 2
   },
-  "gameRulesVersion": "2.3",
+  "gameRulesVersion": "2.4",
   "defaultShot": {
     "aimDeg": 0,
     "power01": 0.11

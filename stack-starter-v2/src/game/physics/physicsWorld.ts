@@ -26,6 +26,7 @@ export class PhysicsWorld implements PhysicsPort {
   private activeShot: ShotRequest | null = null;
   private warned = false;
   private links = new Map<string, StickyLink>();
+  private anchored = new Set<WorldBall>();
   constructor(private scene: Phaser.Scene,
     private onComplete: (sessionId: string, shotId: string, balls: BallSnapshot[]) => void,
     private onDiagnostic: (message: string) => void) {
@@ -60,7 +61,7 @@ export class PhysicsWorld implements PhysicsPort {
   rollback(shotId: string): void {
     this.releaseLinksFor(shotId);
     const index = this.balls.findIndex(ball => ball.id === shotId);
-    if (index >= 0) { this.scene.matter.world.remove(this.balls[index].body); this.balls.splice(index, 1); }
+    if (index >= 0) { this.setRadialAnchor(this.balls[index], false); this.scene.matter.world.remove(this.balls[index].body); this.balls.splice(index, 1); }
     if (this.activeShot?.shotId === shotId) this.activeShot = null;
   }
   snapshot(): BallSnapshot[] {
@@ -124,6 +125,21 @@ export class PhysicsWorld implements PhysicsPort {
   private releaseLinksFor(id: string): void {
     for (const [sourceId, link] of this.links) if (sourceId === id || link.targetId === id) this.releaseLink(sourceId);
   }
+  private setRadialAnchor(ball: WorldBall, active: boolean): void {
+    if (active && !this.anchored.has(ball)) {
+      // A static collider stays at the activation point even when attracted
+      // birds hit it; it still blocks and rebounds the incoming birds.
+      this.scene.matter.body.setStatic(ball.body, true);
+      this.scene.matter.body.setVelocity(ball.body, { x: 0, y: 0 });
+      this.scene.matter.body.setAngularVelocity(ball.body, 0);
+      this.anchored.add(ball);
+    } else if (!active && this.anchored.delete(ball)) {
+      // Matter restores the original mass, inertia, friction and restitution.
+      this.scene.matter.body.setStatic(ball.body, false);
+      this.scene.matter.body.setVelocity(ball.body, { x: 0, y: 0 });
+      this.scene.matter.body.setAngularVelocity(ball.body, 0);
+    }
+  }
   setPaused(paused: boolean): void { this.paused = paused; this.accumulator = 0; }
   update(delta: number): void {
     if (this.paused || !this.activeShot) { this.accumulator = 0; return; }
@@ -149,6 +165,7 @@ export class PhysicsWorld implements PhysicsPort {
       }
       if (ball.id === this.activeShot?.shotId) advanceEffect(ball.effect, isSlow(ball.body.speed, ball.body.angularSpeed), ball.inPlay, delta);
       else ball.effect.phase = 'done';
+      this.setRadialAnchor(ball, ball.inPlay && ball.id === this.activeShot?.shotId && ball.effect.phase === 'active');
     }
     for (const source of this.balls.filter(ball => ball.id === this.activeShot?.shotId && ball.inPlay && ball.effect.phase === 'active')) {
       for (const target of this.balls.filter(ball => ball.inPlay && ball !== source)) {
@@ -168,6 +185,7 @@ export class PhysicsWorld implements PhysicsPort {
       // Expire unused effects too: a missed sticky shot cannot catch a future visitor.
       for (const ball of this.balls) {
         ball.effect.phase = 'done';
+        this.setRadialAnchor(ball, false);
         if (ball.sticky) finishSticky(ball.sticky);
       }
       const shot = this.activeShot; this.activeShot = null; this.accumulator = 0;
@@ -180,7 +198,7 @@ export class PhysicsWorld implements PhysicsPort {
     const processed = new Set<string>(), walls = this.scene.matter.world.walls;
     const coefficients = { left: walls.left?.restitution ?? null, right: walls.right?.restitution ?? null, top: walls.top?.restitution ?? null };
     for (const ball of this.balls) {
-      if (!ball.inPlay || processed.has(ball.id)) continue;
+      if (!ball.inPlay || ball.body.isStatic || processed.has(ball.id)) continue;
       const entry = [...this.links.entries()].find(([id, link]) => id === ball.id || link.targetId === ball.id);
       const members = entry ? this.balls.filter(other => other.inPlay && (other.id === entry[0] || other.id === entry[1].targetId)) : [ball];
       for (const member of members) processed.add(member.id);
@@ -207,7 +225,10 @@ export class PhysicsWorld implements PhysicsPort {
   }
   reset(): void {
     for (const id of this.links.keys()) this.releaseLink(id);
-    for (const ball of this.balls) if (ball.inPlay) this.scene.matter.world.remove(ball.body);
+    for (const ball of this.balls) {
+      this.setRadialAnchor(ball, false);
+      if (ball.inPlay) this.scene.matter.world.remove(ball.body);
+    }
     this.balls.length = 0; this.activeShot = null; this.accumulator = 0; this.elapsed = 0; this.warned = false; this.settling.reset();
   }
   destroy(): void { this.reset(); this.scene.matter.world.off('collisionstart', this.onCollision); }
