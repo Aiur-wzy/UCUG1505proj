@@ -29,7 +29,7 @@ export function bootstrap(debug = false): () => void {
   const $ = <T extends HTMLElement = HTMLElement>(selector: string) => root.querySelector<T>(selector)!;
   const audio = new GameAudio();
   let host: InputHost, input: KeyboardInput, motion: MotionBridge, scene: PlayScene;
-  let menuMode: Mode = 'solo', toastTimer: ReturnType<typeof setTimeout>, previous: GameState | null = null, inventoryKey = '', resultKey = '';
+  let menuMode: Mode = 'solo', toastTimer: ReturnType<typeof setTimeout>, previous: GameState | null = null, inventoryKey = '', resultKey = '', showPrediction = false;
   const abort = new AbortController();
   const notice = (message: string) => { $('#toast').textContent = message; $('#toast').hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { $('#toast').hidden = true; }, 4200); };
   const on = (element: EventTarget, type: string, listener: EventListener) => element.addEventListener(type, listener, { signal: abort.signal });
@@ -62,7 +62,7 @@ export function bootstrap(debug = false): () => void {
       if (c.scene === 'result') audio.play('result');
     }
     $('#mode-label').textContent = state.mode === 'solo' ? `SOLO FLIGHT / 单人闯关 · ${String(state.levelIndex + 1).padStart(2, '0')} / 05` : 'FRIENDLY RIVALRY / 本地双人对战';
-    $('#level-title').textContent = state.mode === 'solo' ? levels[state.levelIndex].name : '好朋友，也要争个圆心。';
+    $('#level-title').textContent = state.mode === 'solo' ? levels[state.levelIndex].name : '好朋友，也要争个中心。';
     $('#player-b').hidden = state.mode !== 'duel'; $('#goal-summary').hidden = state.mode !== 'solo'; $('#goal-value').textContent = `${levels[state.levelIndex].target} 分`;
     for (const player of ['A', 'B'] as const) {
       const id = player.toLowerCase();
@@ -71,7 +71,7 @@ export function bootstrap(debug = false): () => void {
       $(`#player-${id}`).classList.toggle('active', c.activePlayerId === player);
     }
     $('#turn-counter').textContent = `${String(Math.min(state.shotsTaken + (c.phase === 'resolving' || c.scene === 'result' ? 0 : 1), totalShots(state.mode))).padStart(2, '0')} / ${String(totalShots(state.mode)).padStart(2, '0')}`;
-    $('#arena-rule').textContent = state.mode === 'solo' ? '球心入圈 · 取最高分' : '更靠近圆心的一方得分';
+    $('#arena-rule').textContent = state.mode === 'solo' ? '球心入区 · 取最高分' : '更靠近中心的一方得分';
     const phaseCopy = {
       inactive: ['TAKE A MOMENT', c.scene === 'calibration' ? '先认识一下双手。' : '这一局，收好啦。', c.scene === 'calibration' ? '请完成下方校准，或用键鼠继续。' : '每一次投掷，都是新的故事。'],
       select: ['PICK YOUR BIRD', `${c.activePlayerId === 'B' ? 'B 队，' : ''}选一只，出发吧。`, '每只小鸟，都有自己的拿手好戏。'],
@@ -89,14 +89,14 @@ export function bootstrap(debug = false): () => void {
         return `<button class="bird-card ${c.selectedBallId === option.id ? 'selected' : ''}" data-ball="${option.id}" aria-label="${option.label}，剩余 ${option.remaining} 只" ${!c.inputEnabled || c.phase !== 'select' || !option.remaining ? 'disabled' : ''}>${birdSvg('#' + ball.color.toString(16))}<span><strong>${ball.name}<small>${ball.label}</small></strong><span class="bird-description">${ball.description}</span></span><span class="stock-count">×${option.remaining}<kbd>${index + 1}</kbd></span></button>`;
       }).join('');
     }
-    const shot = c.lockedShot ?? c.previewShot ?? { aimDeg: 0, power01: 0.58 };
+    const shot = c.lockedShot ?? c.previewShot ?? defaults.defaultShot;
     $('#aim-value').textContent = `${shot.aimDeg > 0 ? '+' : ''}${shot.aimDeg.toFixed(0)}°`; $('#power-value').innerHTML = `${Math.round(shot.power01 * 100)}<span>%</span>`;
     for (const [name, value] of [['aim', shot.aimDeg], ['power', Math.round(shot.power01 * 100)]] as const) {
       const range = $<HTMLInputElement>(`#${name}-range`); range.value = String(value);
       range.disabled = !c.inputEnabled || !['adjust', 'armed'].includes(c.phase) || (c.phase === 'armed' && c.previewSource === 'keyboard');
     }
-    const path = state.origin && c.previewShot ? predictPath(state.origin, shot, state.balls) : null;
-    $('#preview-note').textContent = c.phase === 'armed' ? '● 已锁定 · 5 秒内发射' : path?.event === 'collision' ? '预计碰撞 · 虚线在首次接触处结束' : path?.event === 'out' ? '预计出界 · 试试减小力度' : '虚线显示预计轨迹，不含后续碰撞';
+    const path = showPrediction && state.origin && c.previewShot ? predictPath(state.origin, shot, state.balls) : null;
+    $('#preview-note').textContent = c.phase === 'armed' ? '● 已锁定 · 5 秒内发射' : !showPrediction ? '短箭头表示方向，凭手感控制落位。' : path?.event === 'collision' ? '调试预计 · 在首次碰球处结束' : path?.event === 'out' ? '调试预计 · 从下方出口离场' : '调试预计 · 含墙壁反弹，不含特殊效果';
     const action = $<HTMLButtonElement>('#shot-action');
     action.textContent = c.phase === 'adjust' ? '锁定瞄准　↵ Enter' : c.phase === 'armed' ? '轻拨，出发！　Space' : c.phase === 'resolving' ? '小鸟正在滑行…' : '先选择一只小鸟';
     action.disabled = !c.inputEnabled || !['adjust', 'armed'].includes(c.phase); $<HTMLButtonElement>('#cancel-shot').disabled = action.disabled;
@@ -107,7 +107,7 @@ export function bootstrap(debug = false): () => void {
     $('#calibrate').hidden = !motion.available || c.previewSource !== 'motion'; $('#camera-panel').hidden = c.previewSource !== 'motion' || !motion.available;
     $('#pause-overlay').hidden = !state.paused; $('#pause').textContent = state.paused ? '▷ 继续' : 'Ⅱ 暂停'; $<HTMLButtonElement>('#pause').disabled = c.scene !== 'play';
     $('#diagnostic').hidden = !state.diagnostic; $('#diagnostic').textContent = state.diagnostic;
-    $('#field-status').textContent = c.scene === 'result' ? '本局已结束 · 所有小鸟与气场均已停稳' : state.paused ? '已暂停' : c.phase === 'resolving' ? '等待小鸟与气场停稳' : c.phase === 'armed' ? '已锁定，按空格出发' : `轮到 ${c.activePlayerId ?? 'A'} 队 · ${state.mode === 'solo' ? levels[state.levelIndex].hint : '越靠近圆心，越有机会得分。'}`;
+    $('#field-status').textContent = c.scene === 'result' ? '本局已结束 · 所有小鸟与气场均已停稳' : state.paused ? '已暂停' : c.phase === 'resolving' ? '等待小鸟与气场停稳' : c.phase === 'armed' ? '已锁定，按空格出发' : `轮到 ${c.activePlayerId ?? 'A'} 队 · ${state.mode === 'solo' ? levels[state.levelIndex].hint : '越靠近中心，越有机会得分。'}`;
     const score = state.mode === 'solo' ? `${scoreSolo(state.balls, levels[state.levelIndex])} 分` : (() => { const value = scoreCurling(state.balls, defaults.world.house, defaults.world.scoreEpsilon); return `A ${value.A} : ${value.B} B`; })();
     $('#provisional-score').textContent = `${c.phase === 'resolving' ? '上一投布局' : '当前布局'} ${score}`;
     $('#result-overlay').hidden = c.scene !== 'result';
@@ -148,6 +148,11 @@ export function bootstrap(debug = false): () => void {
     const value = Number($<HTMLInputElement>(`#${id}-range`).value);
     host.setPreviewSource('keyboard'); const shot = host.getContext().previewShot!;
     input.send('PREVIEW_SHOT', { aimDeg: id === 'aim' ? value : shot.aimDeg, power01: id === 'power' ? value / 100 : shot.power01 });
+  });
+  if (debug) on($('#debug-prediction'), 'change', () => {
+    showPrediction = $<HTMLInputElement>('#debug-prediction').checked;
+    scene.setPredictionVisible(showPrediction);
+    render(host.getSnapshot());
   });
   on(document, 'visibilitychange', () => { if (document.hidden && host?.getContext().scene === 'play') host.setPaused(true); });
   const onHidden = () => { if (host?.getContext().scene === 'play') host.setPaused(true); };

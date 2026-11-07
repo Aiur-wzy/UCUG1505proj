@@ -28,11 +28,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -94,11 +104,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -164,11 +184,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -234,11 +264,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -300,11 +340,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -393,11 +443,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -461,11 +521,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -525,11 +595,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -593,11 +673,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -660,11 +750,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -724,11 +824,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -796,6 +906,16 @@
             "id": "repel",
             "label": "排斥球",
             "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
+            "remaining": 1
           }
         ],
         "selectedBallId": null,
@@ -851,11 +971,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -894,7 +1024,7 @@
       "house": {
         "x": 500,
         "y": 180,
-        "radius": 130
+        "halfSize": 130
       },
       "epsilon": 1,
       "balls": [
@@ -927,7 +1057,7 @@
       "house": {
         "x": 500,
         "y": 180,
-        "radius": 130
+        "halfSize": 130
       },
       "epsilon": 1,
       "balls": [
@@ -978,7 +1108,7 @@
       "house": {
         "x": 500,
         "y": 180,
-        "radius": 130
+        "halfSize": 130
       },
       "epsilon": 1,
       "balls": [
@@ -1011,7 +1141,7 @@
       "house": {
         "x": 500,
         "y": 180,
-        "radius": 130
+        "halfSize": 130
       },
       "epsilon": 1,
       "balls": [
@@ -1044,7 +1174,7 @@
       "house": {
         "x": 500,
         "y": 180,
-        "radius": 130
+        "halfSize": 130
       },
       "epsilon": 1,
       "balls": [
@@ -1068,7 +1198,7 @@
       "house": {
         "x": 500,
         "y": 180,
-        "radius": 130
+        "halfSize": 130
       },
       "epsilon": 1,
       "balls": [
@@ -1092,7 +1222,7 @@
       "house": {
         "x": 500,
         "y": 180,
-        "radius": 130
+        "halfSize": 130
       },
       "epsilon": 1,
       "balls": [
@@ -1157,11 +1287,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -1222,11 +1362,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -1288,11 +1438,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],
@@ -1358,11 +1518,21 @@
           {
             "id": "normal",
             "label": "普通球",
-            "remaining": 3
+            "remaining": 1
           },
           {
             "id": "repel",
             "label": "排斥球",
+            "remaining": 1
+          },
+          {
+            "id": "attract",
+            "label": "吸引球",
+            "remaining": 1
+          },
+          {
+            "id": "sticky",
+            "label": "粘黏球",
             "remaining": 1
           }
         ],

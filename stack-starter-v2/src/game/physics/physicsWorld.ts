@@ -1,13 +1,16 @@
 import type Phaser from 'phaser';
 import defaults from '../../shared/defaults.json';
 import type { BallSnapshot, PhysicsPort, Point, ShotRequest } from '../core/gameState';
-import { advanceEffect, newEffect, repelImpulse } from './effects';
+import { advanceEffect, newEffect, radialImpulse } from './effects';
 import type { EffectState } from './effects';
 import { isOutOfPlay, launchVelocity } from './shotMath';
 import { isSlow, Settling } from './settling';
+import { attachSticky, finishSticky, newSticky, shouldReleaseSticky } from './sticky';
+import type { StickyState } from './sticky';
 
 type Body = ReturnType<Phaser.Physics.Matter.Factory['circle']>;
-export interface WorldBall extends BallSnapshot { body: Body; effect: EffectState; trail: Point[] }
+type Constraint = ReturnType<Phaser.Physics.Matter.Factory['constraint']>;
+export interface WorldBall extends BallSnapshot { body: Body; effect: EffectState; sticky: StickyState | null; trail: Point[] }
 export class PhysicsWorld implements PhysicsPort {
   readonly balls: WorldBall[] = [];
   private accumulator = 0;
@@ -16,11 +19,15 @@ export class PhysicsWorld implements PhysicsPort {
   private settling = new Settling();
   private activeShot: ShotRequest | null = null;
   private warned = false;
+  private links = new Map<string, { targetId: string; constraint: Constraint }>();
   constructor(private scene: Phaser.Scene,
     private onComplete: (sessionId: string, shotId: string, balls: BallSnapshot[]) => void,
     private onDiagnostic: (message: string) => void) {
     scene.matter.world.autoUpdate = false;
     scene.matter.world.setGravity(0, 0);
+    const { width, height, walls } = defaults.world;
+    scene.matter.world.setBounds(0, 0, width, height, walls.thickness, walls.left, walls.right, walls.top, walls.bottom);
+    scene.matter.world.on('collisionstart', this.onCollision);
   }
   spawn(shot: ShotRequest): void {
     if (this.activeShot) throw new Error('A shot is already resolving');
@@ -34,17 +41,55 @@ export class PhysicsWorld implements PhysicsPort {
       });
       this.scene.matter.body.setVelocity(body, launchVelocity(shot));
       this.balls.push({ id: shot.shotId, ownerId: shot.ownerId, typeId: shot.typeId, ...shot.origin,
-        radius: defaults.world.ballRadius, inPlay: true, body, effect: newEffect(shot.typeId === 'repel'), trail: [] });
+        radius: defaults.world.ballRadius, inPlay: true, body, effect: newEffect(shot.typeId), sticky: shot.typeId === 'sticky' ? newSticky() : null, trail: [] });
       this.activeShot = structuredClone(shot); this.elapsed = 0; this.accumulator = 0; this.warned = false; this.settling.reset();
     } catch (error) { if (body) this.scene.matter.world.remove(body); throw error; }
   }
   rollback(shotId: string): void {
+    this.releaseLinksFor(shotId);
     const index = this.balls.findIndex(ball => ball.id === shotId);
     if (index >= 0) { this.scene.matter.world.remove(this.balls[index].body); this.balls.splice(index, 1); }
     if (this.activeShot?.shotId === shotId) this.activeShot = null;
   }
   snapshot(): BallSnapshot[] {
     return this.balls.map(({ id, ownerId, typeId, x, y, radius, inPlay }) => ({ id, ownerId, typeId, x, y, radius, inPlay }));
+  }
+  private onCollision = (event: { pairs: { bodyA: Body; bodyB: Body; restitution: number }[] }): void => {
+    if (!this.activeShot || this.paused) return;
+    for (const pair of event.pairs) {
+      const a = this.balls.find(ball => ball.inPlay && ball.body === pair.bodyA);
+      const b = this.balls.find(ball => ball.inPlay && ball.body === pair.bodyB);
+      if (!a || !b) continue; // Walls / future obstacles cannot become a sticky partner.
+      const busy = (id: string) => this.links.has(id) || [...this.links.values()].some(link => link.targetId === id);
+      if (busy(a.id) || busy(b.id)) continue;
+      const source = a.sticky?.phase === 'ready' ? a : b.sticky?.phase === 'ready' ? b : null;
+      if (!source) continue;
+      const target = source === a ? b : a;
+      const constraint = this.scene.matter.add.constraint(source.body, target.body, source.radius + target.radius,
+        defaults.effects.sticky.stiffness, { damping: defaults.effects.sticky.damping, label: 'sticky-pair' });
+      attachSticky(source.sticky!, target.id);
+      // When two fresh sticky birds meet, this single bond consumes both effects.
+      if (target.sticky?.phase === 'ready') attachSticky(target.sticky, source.id);
+      this.links.set(source.id, { targetId: target.id, constraint });
+      pair.restitution = 0;
+      const mass = a.body.mass + b.body.mass;
+      const velocity = { x: (a.body.velocity.x * a.body.mass + b.body.velocity.x * b.body.mass) / mass,
+        y: (a.body.velocity.y * a.body.mass + b.body.velocity.y * b.body.mass) / mass };
+      this.scene.matter.body.setVelocity(a.body, velocity); this.scene.matter.body.setVelocity(b.body, velocity);
+    }
+  };
+  private releaseLink(sourceId: string): void {
+    const link = this.links.get(sourceId);
+    if (!link) return;
+    this.scene.matter.world.removeConstraint(link.constraint);
+    for (const id of [sourceId, link.targetId]) {
+      const state = this.balls.find(ball => ball.id === id)?.sticky;
+      if (state?.phase === 'attached') finishSticky(state);
+    }
+    this.links.delete(sourceId);
+  }
+  private releaseLinksFor(id: string): void {
+    for (const [sourceId, link] of this.links) if (sourceId === id || link.targetId === id) this.releaseLink(sourceId);
   }
   setPaused(paused: boolean): void { this.paused = paused; this.accumulator = 0; }
   update(delta: number): void {
@@ -63,17 +108,22 @@ export class PhysicsWorld implements PhysicsPort {
         ball.trail.push({ x: ball.x, y: ball.y });
         if (ball.trail.length > 20) ball.trail.shift();
       } else ball.trail.shift();
-      if (isOutOfPlay(ball)) { ball.inPlay = false; ball.trail = []; this.scene.matter.world.remove(ball.body); }
+      if (isOutOfPlay(ball)) { ball.inPlay = false; ball.trail = []; this.releaseLinksFor(ball.id); this.scene.matter.world.remove(ball.body); }
       advanceEffect(ball.effect, isSlow(ball.body.speed, ball.body.angularSpeed), ball.inPlay, delta);
     }
     for (const source of this.balls.filter(ball => ball.inPlay && ball.effect.phase === 'active')) {
       for (const target of this.balls.filter(ball => ball.inPlay && ball !== source)) {
-        const impulse = repelImpulse(source, target);
+        const impulse = radialImpulse(source, target, source.effect.kind!);
         this.scene.matter.body.setVelocity(target.body, { x: target.body.velocity.x + impulse.x, y: target.body.velocity.y + impulse.y });
       }
     }
+    for (const [sourceId, link] of this.links) {
+      const source = this.balls.find(ball => ball.id === sourceId)!, target = this.balls.find(ball => ball.id === link.targetId)!;
+      if (shouldReleaseSticky(source.sticky!, isSlow(source.body.speed, source.body.angularSpeed) && isSlow(target.body.speed, target.body.angularSpeed),
+        source.inPlay && target.inPlay, delta)) this.releaseLink(sourceId);
+    }
     const inPlay = this.balls.filter(ball => ball.inPlay);
-    const done = this.settling.step(inPlay.every(ball => isSlow(ball.body.speed, ball.body.angularSpeed)), this.balls.every(ball => ball.effect.phase === 'done'), delta);
+    const done = this.settling.step(inPlay.every(ball => isSlow(ball.body.speed, ball.body.angularSpeed)), this.links.size === 0 && this.balls.every(ball => ball.effect.phase === 'done'), delta);
     if (done && this.activeShot) {
       for (const ball of inPlay) { this.scene.matter.body.setVelocity(ball.body, { x: 0, y: 0 }); this.scene.matter.body.setAngularVelocity(ball.body, 0); ball.trail = []; }
       const shot = this.activeShot; this.activeShot = null; this.accumulator = 0;
@@ -83,8 +133,9 @@ export class PhysicsWorld implements PhysicsPort {
     }
   }
   reset(): void {
+    for (const id of this.links.keys()) this.releaseLink(id);
     for (const ball of this.balls) if (ball.inPlay) this.scene.matter.world.remove(ball.body);
     this.balls.length = 0; this.activeShot = null; this.accumulator = 0; this.elapsed = 0; this.warned = false; this.settling.reset();
   }
-  destroy(): void { this.reset(); }
+  destroy(): void { this.reset(); this.scene.matter.world.off('collisionstart', this.onCollision); }
 }

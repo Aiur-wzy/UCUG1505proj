@@ -1,0 +1,765 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "browser": "156.0.4314.58",
+  "checks": [
+    {
+      "name": "production UI: four types, hidden prediction, short aim arrow, freeze / cancel / one real-time shot",
+      "details": true
+    },
+    {
+      "name": "390px layout has no horizontal overflow",
+      "details": true
+    },
+    {
+      "name": "keys 3/4 select added types; debug-only prediction toggle changes no gameplay state",
+      "details": true
+    },
+    {
+      "name": "hybrid motion preview, keyboard confirms, loss-edge cancel, DOM focus and duplicate FIRE",
+      "details": true
+    },
+    {
+      "name": "pause stops real Matter simulation and resumes the same throw",
+      "details": true
+    },
+    {
+      "name": "settled birds remain dynamic and can be struck by later shots",
+      "details": true
+    },
+    {
+      "name": "pending and active repel effects block turn completion in real physics",
+      "details": {
+        "samples": [
+          {
+            "frame": 0,
+            "effect": "pending",
+            "phase": "resolving",
+            "turn": 1
+          },
+          {
+            "frame": 266,
+            "effect": "active",
+            "phase": "resolving",
+            "turn": 1
+          },
+          {
+            "frame": 281,
+            "effect": "done",
+            "phase": "resolving",
+            "turn": 1
+          }
+        ],
+        "context": {
+          "protocolVersion": "1.1",
+          "sessionId": "08bdd32f-0a5b-4699-bb91-ea22025bb5c8",
+          "contextId": 5,
+          "turnId": 2,
+          "scene": "play",
+          "phase": "select",
+          "activePlayerId": "A",
+          "previewSource": "keyboard",
+          "inputEnabled": true,
+          "motionEnabled": false,
+          "allowedCommands": [
+            "SELECT_BALL"
+          ],
+          "motionActionsEnabled": [
+            "SELECT_BALL",
+            "PREVIEW_SHOT"
+          ],
+          "ballOptions": [
+            {
+              "id": "normal",
+              "label": "普通球",
+              "remaining": 1
+            },
+            {
+              "id": "repel",
+              "label": "排斥球",
+              "remaining": 0
+            },
+            {
+              "id": "attract",
+              "label": "吸引球",
+              "remaining": 1
+            },
+            {
+              "id": "sticky",
+              "label": "粘黏球",
+              "remaining": 1
+            }
+          ],
+          "selectedBallId": null,
+          "previewShot": null,
+          "lockedShot": null,
+          "limits": {
+            "aimMinDeg": -50,
+            "aimMaxDeg": 50,
+            "powerMin01": 0,
+            "powerMax01": 1
+          }
+        },
+        "effect": {
+          "kind": "repel",
+          "phase": "done",
+          "lowMs": 199.99999999999997,
+          "activeMs": 249.99999999999994,
+          "activations": 1
+        }
+      }
+    },
+    {
+      "name": "pending and active attract effects block turn completion in real physics",
+      "details": {
+        "samples": [
+          {
+            "frame": 0,
+            "effect": "pending",
+            "phase": "resolving",
+            "turn": 1
+          },
+          {
+            "frame": 266,
+            "effect": "active",
+            "phase": "resolving",
+            "turn": 1
+          },
+          {
+            "frame": 287,
+            "effect": "done",
+            "phase": "resolving",
+            "turn": 1
+          }
+        ],
+        "context": {
+          "protocolVersion": "1.1",
+          "sessionId": "382bc2c4-642e-4d7f-999f-eb841f748dee",
+          "contextId": 5,
+          "turnId": 2,
+          "scene": "play",
+          "phase": "select",
+          "activePlayerId": "A",
+          "previewSource": "keyboard",
+          "inputEnabled": true,
+          "motionEnabled": false,
+          "allowedCommands": [
+            "SELECT_BALL"
+          ],
+          "motionActionsEnabled": [
+            "SELECT_BALL",
+            "PREVIEW_SHOT"
+          ],
+          "ballOptions": [
+            {
+              "id": "normal",
+              "label": "普通球",
+              "remaining": 1
+            },
+            {
+              "id": "repel",
+              "label": "排斥球",
+              "remaining": 1
+            },
+            {
+              "id": "attract",
+              "label": "吸引球",
+              "remaining": 0
+            },
+            {
+              "id": "sticky",
+              "label": "粘黏球",
+              "remaining": 1
+            }
+          ],
+          "selectedBallId": null,
+          "previewShot": null,
+          "lockedShot": null,
+          "limits": {
+            "aimMinDeg": -50,
+            "aimMaxDeg": 50,
+            "powerMin01": 0,
+            "powerMax01": 1
+          }
+        },
+        "effect": {
+          "kind": "attract",
+          "phase": "done",
+          "lowMs": 199.99999999999997,
+          "activeMs": 350.00000000000006,
+          "activations": 1
+        }
+      }
+    },
+    {
+      "name": "attraction pulls a nearby settled bird closer in actual Matter simulation",
+      "details": {
+        "activation": [
+          {
+            "id": "f2722469-bece-4371-85b9-b93005e2ae87-shot-1",
+            "ownerId": "A",
+            "typeId": "normal",
+            "x": 440.5179807363648,
+            "y": 186.7634411050466,
+            "radius": 18,
+            "inPlay": true
+          },
+          {
+            "id": "f2722469-bece-4371-85b9-b93005e2ae87-shot-2",
+            "ownerId": "A",
+            "typeId": "attract",
+            "x": 559.3993719496783,
+            "y": 187.35150730064618,
+            "radius": 18,
+            "inPlay": true
+          }
+        ],
+        "end": [
+          {
+            "id": "f2722469-bece-4371-85b9-b93005e2ae87-shot-1",
+            "ownerId": "A",
+            "typeId": "normal",
+            "x": 475.7094903007565,
+            "y": 186.83166447277142,
+            "radius": 18,
+            "inPlay": true
+          },
+          {
+            "id": "f2722469-bece-4371-85b9-b93005e2ae87-shot-2",
+            "ownerId": "A",
+            "typeId": "attract",
+            "x": 559.662404739195,
+            "y": 185.4799317542986,
+            "radius": 18,
+            "inPlay": true
+          }
+        ],
+        "before": 118.88284568710198,
+        "after": 83.96379591258348
+      }
+    },
+    {
+      "name": "sticky first contact bonds a pair, survives pause, releases after settling and does not reactivate",
+      "details": {
+        "sticky": {
+          "phase": "attached",
+          "targetId": "fd0ea937-4fd3-4fd8-a6d7-abcfa36b075c-shot-1",
+          "lowMs": 0,
+          "activations": 1
+        },
+        "balls": [
+          {
+            "id": "fd0ea937-4fd3-4fd8-a6d7-abcfa36b075c-shot-1",
+            "ownerId": "A",
+            "typeId": "normal",
+            "x": 499.90549409204084,
+            "y": 182.06834560749337,
+            "radius": 18,
+            "inPlay": true
+          },
+          {
+            "id": "fd0ea937-4fd3-4fd8-a6d7-abcfa36b075c-shot-2",
+            "ownerId": "A",
+            "typeId": "sticky",
+            "x": 500.09450590795916,
+            "y": 217.98422823314132,
+            "radius": 18,
+            "inPlay": true
+          }
+        ],
+        "constraints": 1
+      }
+    },
+    {
+      "name": "reset removes live sticky constraints and birds while retaining exactly three walls",
+      "details": true
+    },
+    {
+      "name": "maximum-power legal shots rebound off top, left and right walls without escape",
+      "details": [
+        {
+          "wall": "top",
+          "reflected": true,
+          "minX": 500,
+          "maxX": 500,
+          "minY": 17.713567721935412,
+          "ball": {
+            "id": "94242588-5133-41ca-a3e8-7e36b09e3219-shot-1",
+            "ownerId": "A",
+            "typeId": "normal",
+            "x": 500,
+            "y": 493.08628922940466,
+            "radius": 18,
+            "inPlay": true
+          },
+          "bodies": 4
+        },
+        {
+          "wall": "left",
+          "reflected": true,
+          "minX": 17.67699741457455,
+          "maxX": 480.4811875893285,
+          "minY": 17.94999789172593,
+          "ball": {
+            "id": "f2166e54-56d2-4571-8507-24fda231c323-shot-1",
+            "ownerId": "A",
+            "typeId": "normal",
+            "x": 347.70215061934675,
+            "y": 163.6690568041181,
+            "radius": 18,
+            "inPlay": true
+          },
+          "bodies": 4
+        },
+        {
+          "wall": "right",
+          "reflected": true,
+          "minX": 519.5188124106716,
+          "maxX": 982.3230025854255,
+          "minY": 17.94999789172593,
+          "ball": {
+            "id": "2bd5108c-22be-4feb-80ab-0d0e97fcdfc6-shot-1",
+            "ownerId": "A",
+            "typeId": "normal",
+            "x": 652.2978493806864,
+            "y": 163.66905680412012,
+            "radius": 18,
+            "inPlay": true
+          },
+          "bodies": 4
+        }
+      ]
+    },
+    {
+      "name": "constructed downward physics fixture exits the open bottom and is removed",
+      "details": {
+        "ball": {
+          "id": "bottom-exit-fixture",
+          "ownerId": "A",
+          "typeId": "normal",
+          "x": 500,
+          "y": 730.4504000000001,
+          "radius": 18,
+          "inPlay": false
+        },
+        "bodies": 3
+      }
+    },
+    {
+      "name": "five solo levels reachable in actual Matter world",
+      "details": [
+        {
+          "level": 1,
+          "score": 9,
+          "target": 3,
+          "balls": [
+            {
+              "id": "e3542dfa-ebcc-4207-a1f9-d7fdd71ac70e-shot-1",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 493.62998859095444,
+              "y": 181.2138886523659,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "e3542dfa-ebcc-4207-a1f9-d7fdd71ac70e-shot-2",
+              "ownerId": "A",
+              "typeId": "attract",
+              "x": 525.9357777081809,
+              "y": 166.0881897766021,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "e3542dfa-ebcc-4207-a1f9-d7fdd71ac70e-shot-3",
+              "ownerId": "A",
+              "typeId": "sticky",
+              "x": 548.9874835536274,
+              "y": 193.4858053857878,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "e3542dfa-ebcc-4207-a1f9-d7fdd71ac70e-shot-4",
+              "ownerId": "A",
+              "typeId": "repel",
+              "x": 642.7396406399126,
+              "y": 217.82606048079535,
+              "radius": 18,
+              "inPlay": true
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "score": 9,
+          "target": 4,
+          "balls": [
+            {
+              "id": "eb058206-dcdf-4ed7-aa13-a4bc8d9ebd60-shot-1",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 493.62998859095444,
+              "y": 181.2138886523659,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "eb058206-dcdf-4ed7-aa13-a4bc8d9ebd60-shot-2",
+              "ownerId": "A",
+              "typeId": "attract",
+              "x": 525.9357777081809,
+              "y": 166.0881897766021,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "eb058206-dcdf-4ed7-aa13-a4bc8d9ebd60-shot-3",
+              "ownerId": "A",
+              "typeId": "sticky",
+              "x": 548.9874835536274,
+              "y": 193.4858053857878,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "eb058206-dcdf-4ed7-aa13-a4bc8d9ebd60-shot-4",
+              "ownerId": "A",
+              "typeId": "repel",
+              "x": 642.7396406399126,
+              "y": 217.82606048079535,
+              "radius": 18,
+              "inPlay": true
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "score": 9,
+          "target": 5,
+          "balls": [
+            {
+              "id": "01295749-86fa-4e98-b379-9252625f5ab5-shot-1",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 493.62998859095444,
+              "y": 181.2138886523659,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "01295749-86fa-4e98-b379-9252625f5ab5-shot-2",
+              "ownerId": "A",
+              "typeId": "attract",
+              "x": 525.9357777081809,
+              "y": 166.0881897766021,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "01295749-86fa-4e98-b379-9252625f5ab5-shot-3",
+              "ownerId": "A",
+              "typeId": "sticky",
+              "x": 548.9874835536274,
+              "y": 193.4858053857878,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "01295749-86fa-4e98-b379-9252625f5ab5-shot-4",
+              "ownerId": "A",
+              "typeId": "repel",
+              "x": 642.7396406399126,
+              "y": 217.82606048079535,
+              "radius": 18,
+              "inPlay": true
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "score": 9,
+          "target": 6,
+          "balls": [
+            {
+              "id": "414358aa-d001-49c2-aded-8683e8bc0694-shot-1",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 493.62998859095444,
+              "y": 181.2138886523659,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "414358aa-d001-49c2-aded-8683e8bc0694-shot-2",
+              "ownerId": "A",
+              "typeId": "attract",
+              "x": 525.9357777081809,
+              "y": 166.0881897766021,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "414358aa-d001-49c2-aded-8683e8bc0694-shot-3",
+              "ownerId": "A",
+              "typeId": "sticky",
+              "x": 548.9874835536274,
+              "y": 193.4858053857878,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "414358aa-d001-49c2-aded-8683e8bc0694-shot-4",
+              "ownerId": "A",
+              "typeId": "repel",
+              "x": 642.7396406399126,
+              "y": 217.82606048079535,
+              "radius": 18,
+              "inPlay": true
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "score": 9,
+          "target": 7,
+          "balls": [
+            {
+              "id": "a7cc757c-6076-4444-8abf-84134f8712ee-shot-1",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 493.62998859095444,
+              "y": 181.2138886523659,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "a7cc757c-6076-4444-8abf-84134f8712ee-shot-2",
+              "ownerId": "A",
+              "typeId": "attract",
+              "x": 525.9357777081809,
+              "y": 166.0881897766021,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "a7cc757c-6076-4444-8abf-84134f8712ee-shot-3",
+              "ownerId": "A",
+              "typeId": "sticky",
+              "x": 548.9874835536274,
+              "y": 193.4858053857878,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "a7cc757c-6076-4444-8abf-84134f8712ee-shot-4",
+              "ownerId": "A",
+              "typeId": "repel",
+              "x": 642.7396406399126,
+              "y": 217.82606048079535,
+              "radius": 18,
+              "inPlay": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "four low-power shots / solo zero-score failure / retry",
+      "details": true
+    },
+    {
+      "name": "three complete eight-throw duels, one of each type per player, rematch starters and completed effects",
+      "details": [
+        {
+          "match": 1,
+          "owners": [
+            "A",
+            "B",
+            "A",
+            "B",
+            "A",
+            "B",
+            "A",
+            "B"
+          ],
+          "result": {
+            "score": {
+              "A": 1,
+              "B": 0
+            },
+            "winner": "A",
+            "passed": false,
+            "target": null
+          },
+          "effects": [
+            {
+              "kind": "repel",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            },
+            {
+              "kind": "repel",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            },
+            {
+              "kind": "attract",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 350.00000000000006,
+              "activations": 1
+            },
+            {
+              "kind": "attract",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 350.00000000000006,
+              "activations": 1
+            }
+          ]
+        },
+        {
+          "match": 2,
+          "owners": [
+            "B",
+            "A",
+            "B",
+            "A",
+            "B",
+            "A",
+            "B",
+            "A"
+          ],
+          "result": {
+            "score": {
+              "A": 0,
+              "B": 1
+            },
+            "winner": "B",
+            "passed": false,
+            "target": null
+          },
+          "effects": [
+            {
+              "kind": "repel",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            },
+            {
+              "kind": "repel",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            },
+            {
+              "kind": "attract",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 350.00000000000006,
+              "activations": 1
+            },
+            {
+              "kind": "attract",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 350.00000000000006,
+              "activations": 1
+            }
+          ]
+        },
+        {
+          "match": 3,
+          "owners": [
+            "A",
+            "B",
+            "A",
+            "B",
+            "A",
+            "B",
+            "A",
+            "B"
+          ],
+          "result": {
+            "score": {
+              "A": 1,
+              "B": 0
+            },
+            "winner": "A",
+            "passed": false,
+            "target": null
+          },
+          "effects": [
+            {
+              "kind": "repel",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            },
+            {
+              "kind": "repel",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            },
+            {
+              "kind": "attract",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 350.00000000000006,
+              "activations": 1
+            },
+            {
+              "kind": "attract",
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 350.00000000000006,
+              "activations": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "preserved local OpenCV Worker synthetic-image diagnostic",
+      "details": {
+        "anchor": [
+          {
+            "areaPx": 2400,
+            "cx": 69.5,
+            "cy": 119.5,
+            "x": 50,
+            "y": 90,
+            "width": 40,
+            "height": 60
+          }
+        ],
+        "guide": [
+          {
+            "areaPx": 2400,
+            "cx": 249.5,
+            "cy": 119.5,
+            "x": 230,
+            "y": 90,
+            "width": 40,
+            "height": 60
+          }
+        ]
+      }
+    },
+    {
+      "name": "no browser runtime errors",
+      "details": true
+    }
+  ],
+  "errors": []
+}

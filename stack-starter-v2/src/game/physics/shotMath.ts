@@ -13,40 +13,47 @@ export function findLaunchOrigin(balls: BallSnapshot[]): Point | null {
   const x = defaults.world.launchCandidatesX.find(candidate => balls.every(ball => !ball.inPlay || Math.hypot(candidate - ball.x, y - ball.y) >= radius + ball.radius + 2));
   return x === undefined ? null : { x, y };
 }
-export const isOutOfPlay = (ball: Pick<BallSnapshot, 'x' | 'y' | 'radius'>) => ball.x + ball.radius < 0 || ball.y + ball.radius < 0 || ball.x - ball.radius > defaults.world.width || ball.y - ball.radius > defaults.world.height;
+export const isOutOfPlay = (ball: Pick<BallSnapshot, 'x' | 'y' | 'radius'>) => ball.y - ball.radius > defaults.world.height;
 
-export interface PredictedPath { points: Point[]; end: Point; event: 'stop' | 'collision' | 'out' }
-/** Free sliding only; stop at the first contact. No secondary collisions/effects are predicted. */
+export interface PredictedPath { points: Point[]; bounces: Point[]; end: Point; event: 'stop' | 'collision' | 'out' }
+/** Debug only: free sliding and three walls; stop at the first bird contact. */
 export function predictPath(origin: Point, shot: ShotValues, balls: BallSnapshot[]): PredictedPath {
-  const points: Point[] = [{ ...origin }];
+  const points: Point[] = [{ ...origin }], bounces: Point[] = [];
+  const radius = defaults.world.ballRadius;
   let position = { ...origin }, velocity = launchVelocity(shot);
   for (let step = 0; step < 600; step++) {
     velocity = { x: velocity.x * (1 - defaults.physics.frictionAir), y: velocity.y * (1 - defaults.physics.frictionAir) };
-    const next = { x: position.x + velocity.x, y: position.y + velocity.y };
-    let firstHit = Infinity;
-    const a = velocity.x ** 2 + velocity.y ** 2;
-    for (const ball of balls.filter(ball => ball.inPlay)) {
-      const dx = position.x - ball.x, dy = position.y - ball.y;
-      const b = 2 * (dx * velocity.x + dy * velocity.y);
-      const c = dx * dx + dy * dy - (ball.radius + defaults.world.ballRadius) ** 2;
-      const discriminant = b * b - 4 * a * c;
-      const t = c <= 0 ? 0 : discriminant >= 0 && a > 0 ? (-b - Math.sqrt(discriminant)) / (2 * a) : Infinity;
-      if (t >= 0 && t <= 1) firstHit = Math.min(firstHit, t);
+    let remaining = 1;
+    for (let segment = 0; segment < 4 && remaining > 1e-8; segment++) {
+      const move = { x: velocity.x * remaining, y: velocity.y * remaining };
+      let firstHit = Infinity;
+      const a = move.x ** 2 + move.y ** 2;
+      for (const ball of balls.filter(ball => ball.inPlay)) {
+        const dx = position.x - ball.x, dy = position.y - ball.y;
+        const b = 2 * (dx * move.x + dy * move.y), c = dx * dx + dy * dy - (ball.radius + radius) ** 2;
+        const discriminant = b * b - 4 * a * c;
+        const t = c <= 0 ? 0 : discriminant >= 0 && a > 0 ? (-b - Math.sqrt(discriminant)) / (2 * a) : Infinity;
+        if (t >= 0 && t <= 1) firstHit = Math.min(firstHit, t);
+      }
+      const wallX = move.x < 0 ? (radius - position.x) / move.x : move.x > 0 ? (defaults.world.width - radius - position.x) / move.x : Infinity;
+      const wallY = move.y < 0 ? (radius - position.y) / move.y : Infinity;
+      const exit = move.y > 0 ? (defaults.world.height + radius - position.y) / move.y : Infinity;
+      const wall = Math.min(wallX, wallY), t = Math.min(1, firstHit, wall, exit);
+      position = { x: position.x + move.x * t, y: position.y + move.y * t };
+      if (firstHit <= t || exit <= t) {
+        points.push({ ...position });
+        return { points, bounces, end: position, event: firstHit <= exit ? 'collision' : 'out' };
+      }
+      if (wall <= t) {
+        points.push({ ...position }); bounces.push({ ...position });
+        if (wallX <= wall + 1e-8) velocity.x *= -defaults.physics.restitution;
+        if (wallY <= wall + 1e-8) velocity.y *= -defaults.physics.restitution;
+        remaining *= 1 - t;
+      } else remaining = 0;
     }
-    let edge = Infinity;
-    if (next.x < 0) edge = Math.min(edge, -position.x / velocity.x);
-    if (next.x > defaults.world.width) edge = Math.min(edge, (defaults.world.width - position.x) / velocity.x);
-    if (next.y < 0) edge = Math.min(edge, -position.y / velocity.y);
-    if (next.y > defaults.world.height) edge = Math.min(edge, (defaults.world.height - position.y) / velocity.y);
-    if (Math.min(firstHit, edge) <= 1) {
-      const t = Math.min(firstHit, edge), end = { x: position.x + velocity.x * t, y: position.y + velocity.y * t };
-      points.push(end);
-      return { points, end, event: firstHit <= edge ? 'collision' : 'out' };
-    }
-    position = next;
     if (step % 4 === 0) points.push({ ...position });
     if (Math.hypot(velocity.x, velocity.y) < defaults.physics.settleLinearSpeed) break;
   }
   points.push(position);
-  return { points, end: position, event: 'stop' };
+  return { points, bounces, end: position, event: 'stop' };
 }

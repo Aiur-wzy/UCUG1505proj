@@ -32,7 +32,7 @@ export function installDebug(host: InputHost, scene: PlayScene, input: KeyboardI
   host.submit = command => { const result = originalSubmit(command); if (command.type === 'FIRE' && result.accepted && !result.duplicate) lastFire = structuredClone(command); return result; };
   window.__flockDebug = { host, world: scene.world, input,
     stepFrames(count) { for (let i = 0; i < Math.min(3600, Math.max(0, count)); i++) scene.world.update(defaults.physics.stepMs); },
-    inspect: () => ({ state: host.getSnapshot(), balls: scene.world.snapshot(), effects: scene.world.balls.map(ball => ({ id: ball.id, ...ball.effect })), fps: scene.game.loop.actualFps }),
+    inspect: () => ({ state: host.getSnapshot(), balls: scene.world.snapshot(), effects: scene.world.balls.map(ball => ({ id: ball.id, ...ball.effect, sticky: ball.sticky })), fps: scene.game.loop.actualFps }),
   };
   signal.addEventListener('abort', () => clearInterval(interval), { once: true });
 }

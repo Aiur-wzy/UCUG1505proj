@@ -240,7 +240,7 @@ export class InputHost implements MotionHost {
     if (command.type === 'SELECT_BALL') {
       if (Object.keys(payload).length !== 1 || typeof command.payload.ballTypeId !== 'string' || !isBallType(command.payload.ballTypeId)) return finish('INVALID_PAYLOAD');
       if (this.state.inventories[c.activePlayerId!][command.payload.ballTypeId] <= 0) return finish('OUT_OF_STOCK');
-      c.selectedBallId = command.payload.ballTypeId; c.previewShot ??= { aimDeg: 0, power01: 0.58 }; c.phase = 'adjust';
+      c.selectedBallId = command.payload.ballTypeId; c.previewShot ??= { ...defaults.defaultShot }; c.phase = 'adjust';
     } else {
       if (Object.keys(payload).length !== 0) return finish('INVALID_PAYLOAD');
       if (command.type === 'ARM_SHOT') {

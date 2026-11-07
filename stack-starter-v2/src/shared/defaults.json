@@ -11,7 +11,7 @@
     "FIRE",
     "CANCEL_SHOT"
   ],
-  "status": "Initial design and tuning values, not measured performance",
+  "status": "User-requested rules revision 2026-11-07; tuning values, not measured performance",
   "world": {
     "width": 1000,
     "height": 700,
@@ -43,16 +43,23 @@
     "house": {
       "x": 500,
       "y": 180,
-      "radius": 130
+      "halfSize": 130
     },
     "ballRadius": 18,
-    "scoreEpsilon": 1
+    "scoreEpsilon": 1,
+    "walls": {
+      "top": true,
+      "right": true,
+      "left": true,
+      "bottom": false,
+      "thickness": 64
+    }
   },
   "physics": {
     "stepMs": 16.666666666666668,
     "maxCatchUpSteps": 5,
     "launchSpeedMin": 3,
-    "launchSpeedMax": 13,
+    "launchSpeedMax": 26,
     "frictionAir": 0.02,
     "restitution": 0.7,
     "gravityScale": 0,
@@ -71,16 +78,31 @@
       "radius": 120,
       "deltaVelocityPerTick": 0.12,
       "maxActivations": 1
+    },
+    "attract": {
+      "triggerLowSpeedMs": 200,
+      "radius": 150,
+      "deltaVelocityPerTick": 0.16,
+      "durationMs": 350,
+      "maxActivations": 1
+    },
+    "sticky": {
+      "maxActivations": 1,
+      "damping": 0.2,
+      "settleHoldMs": 200,
+      "stiffness": 0.9
     }
   },
   "inventory": {
-    "normal": 3,
-    "repel": 1
+    "normal": 1,
+    "repel": 1,
+    "attract": 1,
+    "sticky": 1
   },
   "soloLevels": [
     {
       "id": "L1",
-      "zoneRadii": [
+      "zoneHalfSizes": [
         180,
         110,
         45
@@ -95,7 +117,7 @@
     },
     {
       "id": "L2",
-      "zoneRadii": [
+      "zoneHalfSizes": [
         180,
         110,
         45
@@ -110,7 +132,7 @@
     },
     {
       "id": "L3",
-      "zoneRadii": [
+      "zoneHalfSizes": [
         180,
         110,
         45
@@ -125,7 +147,7 @@
     },
     {
       "id": "L4",
-      "zoneRadii": [
+      "zoneHalfSizes": [
         180,
         110,
         45
@@ -140,7 +162,7 @@
     },
     {
       "id": "L5",
-      "zoneRadii": [
+      "zoneHalfSizes": [
         180,
         110,
         45
@@ -214,5 +236,10 @@
     "zeroUnintendedShotsMinutes": 3,
     "keyboardDuelMatches": 3,
     "motionDuelMatches": 2
+  },
+  "gameRulesVersion": "2.1",
+  "defaultShot": {
+    "aimDeg": 0,
+    "power01": 0.25
   }
 }

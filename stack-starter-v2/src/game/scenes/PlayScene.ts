@@ -6,6 +6,7 @@ import { ballDefinitions } from '../config/ballDefinitions';
 import { PhysicsWorld } from '../physics/physicsWorld';
 import { drawShotPreview } from '../ui/shotPreview';
 import type { GameAudio } from '../audio';
+import { totalShots } from '../core/modeRules';
 
 export class PlayScene extends Phaser.Scene {
   world!: PhysicsWorld;
@@ -16,6 +17,7 @@ export class PlayScene extends Phaser.Scene {
   private owners: Phaser.GameObjects.Text[] = [];
   private zoneLabels: Phaser.GameObjects.Text[] = [];
   private onTick: (() => void) | null = null;
+  private predictionVisible = false;
   constructor(private ready: (scene: PlayScene) => void, private audio: GameAudio) { super('PlayScene'); }
   create(): void {
     this.field = this.add.graphics(); this.graphics = this.add.graphics();
@@ -24,13 +26,14 @@ export class PlayScene extends Phaser.Scene {
       message => this.events.emit('diagnostic', message));
     const collision = () => { if (this.state?.context.phase === 'resolving' && !this.state.paused) this.audio.play('collision'); };
     this.matter.world.on('collisionstart', collision);
-    for (let i = 0; i < 8; i++) this.owners.push(this.add.text(0, 0, '', { fontFamily: 'Segoe UI, sans-serif', fontSize: '12px', fontStyle: 'bold', color: '#24474a' }).setOrigin(0.5));
+    for (let i = 0; i < totalShots('duel'); i++) this.owners.push(this.add.text(0, 0, '', { fontFamily: 'Segoe UI, sans-serif', fontSize: '12px', fontStyle: 'bold', color: '#24474a' }).setOrigin(0.5));
     for (let i = 0; i < 3; i++) this.zoneLabels.push(this.add.text(0, 0, '', { fontFamily: 'Segoe UI, sans-serif', fontSize: '13px', color: '#52746a' }).setOrigin(0.5));
     this.events.once('shutdown', () => { this.world.destroy(); this.matter.world.off('collisionstart', collision); this.events.removeAllListeners('settled'); this.events.removeAllListeners('diagnostic'); });
     this.ready(this);
   }
   bindTick(tick: () => void): void { this.onTick = tick; }
   setState(state: GameState): void { this.state = state; }
+  setPredictionVisible(visible: boolean): void { this.predictionVisible = visible; }
   private drawField(): void {
     if (!this.state) return;
     const key = `${this.state.mode}-${this.state.levelIndex}`;
@@ -40,13 +43,17 @@ export class PlayScene extends Phaser.Scene {
     g.clear().fillStyle(0xe9f0e7).fillRect(0, 0, width, height);
     g.lineStyle(1, 0xc8d8ca, 0.7);
     for (let x = 25; x < width; x += 25) for (let y = 25; y < height; y += 25) g.fillStyle(0xb1c6b6, 0.45).fillCircle(x, y, 0.85);
-    g.lineStyle(1.5, 0x8fab9f).strokeRoundedRect(16, 16, width - 32, height - 32, 10);
-    const radii = this.state.mode === 'solo' ? levels[this.state.levelIndex].zoneRadii : [house.radius, 85, 40];
+    const halfSizes = this.state.mode === 'solo' ? levels[this.state.levelIndex].zoneHalfSizes : [house.halfSize, 85, 40];
     const colors = [0xc0d9c9, 0xf8f5e9, 0xe9b394];
-    radii.forEach((radius, index) => {
-      g.fillStyle(colors[index], 1).fillCircle(house.x, house.y, radius).lineStyle(1.5, 0x688c78, 0.65).strokeCircle(house.x, house.y, radius);
-      this.zoneLabels[index].setText(this.state!.mode === 'solo' ? `${index + 1} 分` : '').setPosition(house.x, house.y + radius - 17);
+    halfSizes.forEach((halfSize, index) => {
+      g.fillStyle(colors[index], 1).fillRect(house.x - halfSize, house.y - halfSize, halfSize * 2, halfSize * 2);
+      g.lineStyle(1.5, 0x688c78, 0.65).strokeRect(house.x - halfSize, house.y - halfSize, halfSize * 2, halfSize * 2);
+      this.zoneLabels[index].setText(this.state!.mode === 'solo' ? `${index + 1} 分` : '').setPosition(house.x, house.y + halfSize - 17);
     });
+    // Painted rails sit inside the true physical boundaries; the lower edge is open.
+    g.fillStyle(0x557b6a).fillRect(0, 0, width, 7).fillRect(0, 0, 7, height).fillRect(width - 7, 0, 7, height);
+    g.lineStyle(2, 0xd79c78, 0.7);
+    for (let x = 20; x < width - 20; x += 30) g.lineBetween(x, height - 2, x + 12, height - 2);
     g.lineStyle(1, 0x688c78, 0.6).lineBetween(house.x - 8, house.y, house.x + 8, house.y).lineBetween(house.x, house.y - 8, house.x, house.y + 8);
     g.lineStyle(2, 0xda9e82, 0.8).lineBetween(50, 565, 950, 565);
     g.lineStyle(1, 0x78968a, 0.4).lineBetween(50, 610, 950, 610);
@@ -60,17 +67,23 @@ export class PlayScene extends Phaser.Scene {
       this.owners[index]?.setVisible(ball.inPlay);
       if (!ball.inPlay) continue;
       for (let i = 1; i < ball.trail.length; i++) g.lineStyle(3, ball.ownerId === 'A' ? 0x66a49a : 0xd78c70, i / ball.trail.length * 0.25).lineBetween(ball.trail[i - 1].x, ball.trail[i - 1].y, ball.trail[i].x, ball.trail[i].y);
-      if (ball.effect.phase === 'active') {
-        g.fillStyle(0xe9b76c, 0.08).fillCircle(ball.x, ball.y, defaults.effects.repel.radius);
-        g.lineStyle(2, 0xd3a052, 0.5).strokeCircle(ball.x, ball.y, 25 + ball.effect.activeMs / defaults.effects.repel.durationMs * 95);
+      if (ball.effect.phase === 'active' && ball.effect.kind) {
+        const config = defaults.effects[ball.effect.kind], pull = ball.effect.kind === 'attract', color = pull ? 0x699ec7 : 0x559f88;
+        g.fillStyle(color, 0.08).fillCircle(ball.x, ball.y, config.radius);
+        const progress = ball.effect.activeMs / config.durationMs;
+        g.lineStyle(2, color, 0.7).strokeCircle(ball.x, ball.y, 25 + (pull ? 1 - progress : progress) * (config.radius - 25));
+      }
+      if (ball.sticky?.phase === 'attached') {
+        const target = this.world.balls.find(other => other.id === ball.sticky!.targetId);
+        if (target?.inPlay) g.lineStyle(6, 0xd57e76, 0.7).lineBetween(ball.x, ball.y, target.x, target.y);
       }
       this.drawBird(ball.x, ball.y, ball.typeId, ball.ownerId);
       this.owners[index].setText(ball.ownerId).setPosition(ball.x, ball.y + 7);
     }
     for (let i = this.world.balls.length; i < this.owners.length; i++) this.owners[i].setVisible(false);
-    if (this.state.context.scene === 'play' && !this.state.paused) drawShotPreview(g, this.state);
+    if (this.state.context.scene === 'play' && !this.state.paused) drawShotPreview(g, this.state, this.predictionVisible);
     const c = this.state.context;
-    Object.assign(this.game.canvas.dataset, { phase: c.phase, aim: String(c.lockedShot?.aimDeg ?? c.previewShot?.aimDeg ?? 0), balls: String(this.world.balls.length), turn: String(c.turnId) });
+    Object.assign(this.game.canvas.dataset, { phase: c.phase, aim: String(c.lockedShot?.aimDeg ?? c.previewShot?.aimDeg ?? 0), balls: String(this.world.balls.length), turn: String(c.turnId), prediction: String(this.predictionVisible) });
   }
   private drawBird(x: number, y: number, type: string, owner: string): void {
     const g = this.graphics, fill = ballDefinitions.find(ball => ball.id === type)!.color;
@@ -81,5 +94,7 @@ export class PlayScene extends Phaser.Scene {
     g.fillStyle(0x24474a).fillCircle(x - 6, y - 5, 2.6).fillCircle(x + 6, y - 5, 2.6);
     g.fillStyle(0xe58d4e).fillTriangle(x - 3, y - 1, x + 3, y - 1, x, y + 3);
     if (type === 'repel') g.lineStyle(1.3, 0xb37c30).strokeCircle(x, y, 22);
+    if (type === 'attract') g.lineStyle(1.5, 0x3f79aa).strokeCircle(x, y, 22).strokeCircle(x, y, 24);
+    if (type === 'sticky') g.fillStyle(0xb94e57).fillCircle(x - 17, y + 9, 4).fillCircle(x + 17, y + 9, 4);
   }
 }

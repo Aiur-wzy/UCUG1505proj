@@ -1,7 +1,7 @@
 Flock & Flick — 正式游戏工程（A1–A4）
 
 本目录保留 stack-starter-v2 名称，已从技术原型扩展为正式游戏。
-先阅读 GAME-HANDOFF.md 和仓库 tasks/records/A-Part-20261107.md。
+先阅读 GAME-HANDOFF.md、仓库 游戏规则变更-v2.1.md 和 tasks/records/Rules-v2.1-20261107.md。
 
 Windows 快速启动：在仓库根目录双击 Start-Game.cmd。
 开发版：Start-Game.cmd --dev。
@@ -21,9 +21,11 @@ Windows 快速启动：在仓库根目录双击 Start-Game.cmd。
 原八球与视觉原型：http://127.0.0.1:4173/dev/stack.html
 开发服务器 npm.cmd run dev 使用相同路径，端口 5173。
 
-按 1/2 选球，鼠标或左右键瞄准，滚轮或上下键调力度。
+按 1/2/3/4 选球，鼠标或左右键瞄准，滚轮或上下键调力度。
 Enter 锁定，Space 发射，Esc 取消；点击画布恢复键盘焦点。
-五关、双人八投、排斥球与完整键鼠已实现。
+五关、双人八投、普通/排斥/吸引/粘黏四种球与完整键鼠已实现；每人每种各 1 只。
+场地上/左/右三面反弹墙，底边开放；方形计分；最大初速度 13 → 26，默认力度 25%。
+正式游戏隐藏落点预测。联调页右侧顶部可勾选“调试：显示预计轨迹与落点”，默认关闭。
 B 的真实手套控制器、校准与现场性能仍待接入和验收。
 
 不提交 node_modules、dist、public/generated、.local 或 test-results。

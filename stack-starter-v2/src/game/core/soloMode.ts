@@ -4,8 +4,8 @@ import type { BallSnapshot, GameResult } from './gameState';
 
 export function scoreSolo(balls: BallSnapshot[], level: Level): number {
   return balls.filter(ball => ball.inPlay).reduce((total, ball) => {
-    const distance = Math.hypot(ball.x - defaults.world.house.x, ball.y - defaults.world.house.y);
-    const points = level.zoneRadii.reduce((best, radius, index) => distance <= radius ? Math.max(best, level.zonePoints[index]) : best, 0);
+    const distance = Math.max(Math.abs(ball.x - defaults.world.house.x), Math.abs(ball.y - defaults.world.house.y));
+    const points = level.zoneHalfSizes.reduce((best, halfSize, index) => distance <= halfSize ? Math.max(best, level.zonePoints[index]) : best, 0);
     return total + points;
   }, 0);
 }

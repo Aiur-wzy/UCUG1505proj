@@ -16,7 +16,7 @@ describe('authoritative commands', () => {
     h.advance(1000);
     expect(h.host.submit(fire)).toEqual({ ...result, duplicate: true });
     expect(h.shots).toHaveLength(1); expect(h.shots[0]).toMatchObject({ aimDeg: 12, power01: 0.6 });
-    expect(h.host.getSnapshot().inventories.A.normal).toBe(2);
+    expect(h.host.getSnapshot().inventories.A.normal).toBe(0);
     expect(h.host.submit({ ...fire, atMs: fire.atMs + 1 }).reason).toBe('ID_REUSE');
   });
   it('returns copies and publishes the new context before returning a receipt', () => {
@@ -25,7 +25,7 @@ describe('authoritative commands', () => {
     const result = h.send('SELECT_BALL', { ballTypeId: 'normal' });
     expect(notified).toBe(result.contextId); expect(h.host.getContext().phase).toBe('adjust');
     h.host.getSnapshot().inventories.A.normal = 0;
-    expect(h.host.getSnapshot().inventories.A.normal).toBe(3);
+    expect(h.host.getSnapshot().inventories.A.normal).toBe(1);
   });
   it.each([NaN, Infinity, -Infinity, 51, -51])('rejects invalid angle %s', aimDeg => {
     const h = harness(); h.toPhase('adjust');
@@ -57,14 +57,14 @@ describe('authoritative commands', () => {
     h.host.setPaused(false); h.send('ARM_SHOT', {}); h.send('FIRE', {});
     const old = h.shots[0]; h.host.retry();
     expect(h.host.completeShot(old.sessionId, old.shotId, [])).toBe(false);
-    expect(h.host.getSnapshot().inventories.A.normal).toBe(3);
+    expect(h.host.getSnapshot().inventories.A.normal).toBe(1);
   });
   it('rolls back a partially failed spawn and never retries the same command', () => {
     const h = harness(); h.toPhase('armed'); h.fail();
     const command = h.host.command('FIRE', {});
     expect(() => h.host.submit(command)).toThrow('simulated partial spawn');
     expect(h.shots).toHaveLength(0); expect(h.rolledBack).toHaveLength(1);
-    expect(h.host.getSnapshot().inventories.A.normal).toBe(3); expect(h.host.getContext().phase).toBe('armed');
+    expect(h.host.getSnapshot().inventories.A.normal).toBe(1); expect(h.host.getContext().phase).toBe('armed');
     expect(() => h.host.submit(command)).toThrow('simulated partial spawn'); expect(h.rolledBack).toHaveLength(1);
   });
   it('ignores repeated completion and does not settle merely because time has elapsed', () => {
@@ -84,7 +84,7 @@ describe('authoritative commands', () => {
     h.finish(defaults.world.launchCandidatesX.map((x, index) => ({ id: `block-${index}`, ownerId: 'A', typeId: 'normal', x, y: 610, radius: 18, inPlay: true })));
     expect(h.host.getSnapshot().origin).toBeNull(); expect(h.host.getSnapshot().diagnostic).toBeTruthy();
     expect(h.send('SELECT_BALL', { ballTypeId: 'normal' }).reason).toBe('INPUT_DISABLED');
-    expect(h.host.getSnapshot().inventories.A.normal).toBe(2);
+    expect(h.host.getSnapshot().inventories.A.normal).toBe(0);
   });
   it('source switches clear locks but preserve the selected ball and visible values', () => {
     const h = harness(); h.toPhase('armed');
@@ -169,7 +169,7 @@ describe('published contract fixtures executed against the real receiver', () =>
   it.each(fixtures.rejectionCases)('$id → $expectedReason', row => {
     const h = harness('motion'); h.host.setMotionActions(row.context.motionActionsEnabled as ControlCommand['type'][]); h.ready();
     if (row.id === 'empty-inventory') {
-      for (let i = 0; i < 3; i++) { h.toPhase('resolving'); h.finish(); }
+      for (let i = 0; i < defaults.inventory.normal; i++) { h.toPhase('resolving'); h.finish(); }
     } else h.toPhase(row.context.phase as Phase);
     if (row.id === 'other-source') h.host.setPreviewSource('keyboard');
     if (row.id === 'disabled-gate') h.host.setPaused(true);

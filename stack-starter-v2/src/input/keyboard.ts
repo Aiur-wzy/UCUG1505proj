@@ -31,10 +31,11 @@ export class KeyboardInput {
     if (!context.inputEnabled || context.scene !== 'play') return;
     const isArrow = event.key.startsWith('Arrow');
     if (event.repeat && !isArrow) return;
-    if (!['1', '2', 'Enter', 'Escape', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].includes(event.key)) return;
+    const ballIndex = /^[1-9]$/.test(event.key) ? Number(event.key) - 1 : -1;
+    if (ballIndex < 0 && !['Enter', 'Escape', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].includes(event.key)) return;
     event.preventDefault();
-    if (event.key === '1' || event.key === '2') {
-      const ball = context.ballOptions[Number(event.key) - 1];
+    if (ballIndex >= 0) {
+      const ball = context.ballOptions[ballIndex];
       if (context.phase === 'select' && ball) this.send('SELECT_BALL', { ballTypeId: ball.id });
     } else if (event.key === 'Enter') this.send('ARM_SHOT', {});
     else if (event.key === ' ') this.send('FIRE', {});
