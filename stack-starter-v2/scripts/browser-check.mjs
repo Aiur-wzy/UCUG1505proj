@@ -3,6 +3,7 @@ import { createRequire } from 'node:module';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
+import { checkWallAndSticky } from './physics-regressions.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.FLOCK_PLAYWRIGHT || 'playwright-core');
@@ -117,6 +118,7 @@ try {
   assert.deepEqual(await page.evaluate(() => window.__flockDebug.world.snapshot()), beforePause);
   await page.locator('#pause').click(); await settle();
   record('pause stops real Matter simulation and resumes the same throw');
+  await checkWallAndSticky(page, record);
 
   await start();
   await shoot('normal', 0, 0.11);

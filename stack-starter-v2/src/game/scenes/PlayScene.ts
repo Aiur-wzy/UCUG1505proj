@@ -24,11 +24,15 @@ export class PlayScene extends Phaser.Scene {
     this.world = new PhysicsWorld(this,
       (session, shot, balls) => this.events.emit('settled', session, shot, balls),
       message => this.events.emit('diagnostic', message));
-    const collision = () => { if (this.state?.context.phase === 'resolving' && !this.state.paused) this.audio.play('collision'); };
+    const impact = () => { if (this.state?.context.phase === 'resolving' && !this.state.paused) this.audio.play('collision'); };
+    const collision = (event: { pairs: { bodyA: { isSensor: boolean }; bodyB: { isSensor: boolean } }[] }) => {
+      if (event.pairs.some(pair => !pair.bodyA.isSensor && !pair.bodyB.isSensor)) impact();
+    };
     this.matter.world.on('collisionstart', collision);
+    this.events.on('wallbounce', impact);
     for (let i = 0; i < totalShots('duel'); i++) this.owners.push(this.add.text(0, 0, '', { fontFamily: 'Segoe UI, sans-serif', fontSize: '12px', fontStyle: 'bold', color: '#24474a' }).setOrigin(0.5));
     for (let i = 0; i < 3; i++) this.zoneLabels.push(this.add.text(0, 0, '', { fontFamily: 'Segoe UI, sans-serif', fontSize: '13px', color: '#52746a' }).setOrigin(0.5));
-    this.events.once('shutdown', () => { this.world.destroy(); this.matter.world.off('collisionstart', collision); this.events.removeAllListeners('settled'); this.events.removeAllListeners('diagnostic'); });
+    this.events.once('shutdown', () => { this.world.destroy(); this.matter.world.off('collisionstart', collision); this.events.off('wallbounce', impact); this.events.removeAllListeners('settled'); this.events.removeAllListeners('diagnostic'); });
     this.ready(this);
   }
   bindTick(tick: () => void): void { this.onTick = tick; }

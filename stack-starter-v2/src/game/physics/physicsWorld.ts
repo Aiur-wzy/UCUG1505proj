@@ -7,9 +7,15 @@ import { isOutOfPlay, launchVelocity } from './shotMath';
 import { isSlow, Settling } from './settling';
 import { attachSticky, finishSticky, newSticky, shouldReleaseSticky } from './sticky';
 import type { StickyState } from './sticky';
+import { reflectWalls } from './walls';
 
 type Body = ReturnType<Phaser.Physics.Matter.Factory['circle']>;
 type Constraint = ReturnType<Phaser.Physics.Matter.Factory['constraint']>;
+type CollisionPair = { bodyA: Body; bodyB: Body; restitution: number; isSensor: boolean };
+interface StickyLink {
+  targetId: string; constraint: Constraint; pair: CollisionPair;
+  originals: { body: Body; mass: number; inertia: number; group: number }[];
+}
 export interface WorldBall extends BallSnapshot { body: Body; effect: EffectState; sticky: StickyState | null; trail: Point[] }
 export class PhysicsWorld implements PhysicsPort {
   readonly balls: WorldBall[] = [];
@@ -19,7 +25,7 @@ export class PhysicsWorld implements PhysicsPort {
   private settling = new Settling();
   private activeShot: ShotRequest | null = null;
   private warned = false;
-  private links = new Map<string, { targetId: string; constraint: Constraint }>();
+  private links = new Map<string, StickyLink>();
   constructor(private scene: Phaser.Scene,
     private onComplete: (sessionId: string, shotId: string, balls: BallSnapshot[]) => void,
     private onDiagnostic: (message: string) => void) {
@@ -27,7 +33,12 @@ export class PhysicsWorld implements PhysicsPort {
     scene.matter.world.setGravity(0, 0);
     const { width, height, walls } = defaults.world;
     scene.matter.world.setBounds(0, 0, width, height, walls.thickness, walls.left, walls.right, walls.top, walls.bottom);
-    for (const wall of Object.values(scene.matter.world.walls)) if (wall) wall.restitution = defaults.physics.wallRestitution;
+    for (const wall of Object.values(scene.matter.world.walls)) if (wall) {
+      wall.restitution = defaults.physics.wallRestitution;
+      // Resolve the three rink edges explicitly, bypassing Matter's low-speed
+      // resting-contact response. These bodies remain available as sensors.
+      wall.isSensor = true;
+    }
     scene.matter.world.on('collisionstart', this.onCollision);
   }
   spawn(shot: ShotRequest): void {
@@ -55,7 +66,7 @@ export class PhysicsWorld implements PhysicsPort {
   snapshot(): BallSnapshot[] {
     return this.balls.map(({ id, ownerId, typeId, x, y, radius, inPlay }) => ({ id, ownerId, typeId, x, y, radius, inPlay }));
   }
-  private onCollision = (event: { pairs: { bodyA: Body; bodyB: Body; restitution: number }[] }): void => {
+  private onCollision = (event: { pairs: CollisionPair[] }): void => {
     if (!this.activeShot || this.paused) return;
     for (const pair of event.pairs) {
       const a = this.balls.find(ball => ball.inPlay && ball.body === pair.bodyA);
@@ -68,21 +79,42 @@ export class PhysicsWorld implements PhysicsPort {
         : b.id === this.activeShot.shotId && b.sticky?.phase === 'ready' ? b : null;
       if (!source) continue;
       const target = source === a ? b : a;
+      const originals = [source, target].map(ball => ({ body: ball.body, mass: ball.body.mass,
+        inertia: ball.body.inertia, group: ball.body.collisionFilter.group }));
+      const velocity = { ...source.body.velocity }, group = this.scene.matter.body.nextGroup(true);
+      // One launched bird carries the pair: preserve its velocity and assign
+      // half of its original mass to each member. Air drag stays unchanged.
+      for (const ball of [source, target]) {
+        this.scene.matter.body.setMass(ball.body, originals[0].mass / 2);
+        ball.body.collisionFilter.group = group;
+        this.scene.matter.body.setVelocity(ball.body, velocity);
+      }
+      // Start at the bond's rest length so correcting the impact overlap does
+      // not introduce an artificial spring kick on the following frame.
+      const dx = target.body.position.x - source.body.position.x, dy = target.body.position.y - source.body.position.y;
+      const distance = Math.hypot(dx, dy), correction = (source.radius + target.radius - distance) / 2;
+      const offset = { x: (distance > 1e-9 ? dx / distance : 1) * correction, y: (distance > 1e-9 ? dy / distance : 0) * correction };
+      this.scene.matter.body.translate(source.body, { x: -offset.x, y: -offset.y });
+      this.scene.matter.body.translate(target.body, offset);
+      // Suppress this contact immediately as well as future internal contacts;
+      // otherwise the current solver pass would halve the pickup velocity.
+      pair.isSensor = true;
       const constraint = this.scene.matter.add.constraint(source.body, target.body, source.radius + target.radius,
         defaults.effects.sticky.stiffness, { damping: defaults.effects.sticky.damping, label: 'sticky-pair' });
       attachSticky(source.sticky!, target.id);
-      this.links.set(source.id, { targetId: target.id, constraint });
-      pair.restitution = 0;
-      const mass = a.body.mass + b.body.mass;
-      const velocity = { x: (a.body.velocity.x * a.body.mass + b.body.velocity.x * b.body.mass) / mass,
-        y: (a.body.velocity.y * a.body.mass + b.body.velocity.y * b.body.mass) / mass };
-      this.scene.matter.body.setVelocity(a.body, velocity); this.scene.matter.body.setVelocity(b.body, velocity);
+      this.links.set(source.id, { targetId: target.id, constraint, pair, originals });
     }
   };
   private releaseLink(sourceId: string): void {
     const link = this.links.get(sourceId);
     if (!link) return;
     this.scene.matter.world.removeConstraint(link.constraint);
+    for (const original of link.originals) {
+      this.scene.matter.body.setMass(original.body, original.mass);
+      this.scene.matter.body.setInertia(original.body, original.inertia);
+      original.body.collisionFilter.group = original.group;
+    }
+    link.pair.isSensor = false;
     for (const id of [sourceId, link.targetId]) {
       const state = this.balls.find(ball => ball.id === id)?.sticky;
       if (state?.phase === 'attached') finishSticky(state);
@@ -101,6 +133,7 @@ export class PhysicsWorld implements PhysicsPort {
   }
   private step(delta: number): void {
     this.scene.matter.world.step(delta);
+    this.resolveWalls();
     this.elapsed += delta;
     for (const ball of this.balls) {
       if (!ball.inPlay) continue;
@@ -141,6 +174,35 @@ export class PhysicsWorld implements PhysicsPort {
       this.onComplete(shot.sessionId, shot.shotId, this.snapshot());
     } else if (!this.warned && this.elapsed > defaults.physics.diagnosticTimeoutMs) {
       this.warned = true; this.onDiagnostic('小鸟仍未停稳。可以继续等待，或重试本局；尚未结算。');
+    }
+  }
+  private resolveWalls(): void {
+    const processed = new Set<string>(), walls = this.scene.matter.world.walls;
+    const coefficients = { left: walls.left?.restitution ?? null, right: walls.right?.restitution ?? null, top: walls.top?.restitution ?? null };
+    for (const ball of this.balls) {
+      if (!ball.inPlay || processed.has(ball.id)) continue;
+      const entry = [...this.links.entries()].find(([id, link]) => id === ball.id || link.targetId === ball.id);
+      const members = entry ? this.balls.filter(other => other.inPlay && (other.id === entry[0] || other.id === entry[1].targetId)) : [ball];
+      for (const member of members) processed.add(member.id);
+      const mass = members.reduce((total, member) => total + member.body.mass, 0);
+      const incoming = { x: 0, y: 0 };
+      for (const member of members) {
+        incoming.x += member.body.velocity.x * member.body.mass / mass;
+        incoming.y += member.body.velocity.y * member.body.mass / mass;
+      }
+      const result = reflectWalls({
+        minX: Math.min(...members.map(member => member.body.position.x - member.radius)),
+        maxX: Math.max(...members.map(member => member.body.position.x + member.radius)),
+        minY: Math.min(...members.map(member => member.body.position.y - member.radius)),
+      }, incoming, coefficients);
+      for (const member of members) {
+        if (result.shift.x || result.shift.y) this.scene.matter.body.translate(member.body, result.shift);
+        if (result.hits.length) this.scene.matter.body.setVelocity(member.body, {
+          x: result.hits.some(hit => hit !== 'top') ? result.velocity.x : member.body.velocity.x,
+          y: result.hits.includes('top') ? result.velocity.y : member.body.velocity.y,
+        });
+      }
+      if (result.hits.length) this.scene.events.emit('wallbounce');
     }
   }
   reset(): void {
