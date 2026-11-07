@@ -74,6 +74,26 @@ describe('authoritative commands', () => {
     expect(h.host.completeShot(shot.sessionId, shot.shotId, [])).toBe(false);
     expect(h.host.getContext().turnId).toBe(2);
   });
+  it('does not retain a failed initial controller subscription', () => {
+    const h = harness(); let calls = 0;
+    expect(() => h.host.onContext(() => { calls++; throw new Error('controller failed'); })).toThrow('controller failed');
+    h.send('SELECT_BALL', { ballTypeId: 'normal' }); expect(calls).toBe(1);
+  });
+  it('blocks an entirely occupied launch line without spending more inventory', () => {
+    const h = harness(); h.toPhase('resolving');
+    h.finish(defaults.world.launchCandidatesX.map((x, index) => ({ id: `block-${index}`, ownerId: 'A', typeId: 'normal', x, y: 610, radius: 18, inPlay: true })));
+    expect(h.host.getSnapshot().origin).toBeNull(); expect(h.host.getSnapshot().diagnostic).toBeTruthy();
+    expect(h.send('SELECT_BALL', { ballTypeId: 'normal' }).reason).toBe('INPUT_DISABLED');
+    expect(h.host.getSnapshot().inventories.A.normal).toBe(2);
+  });
+  it('source switches clear locks but preserve the selected ball and visible values', () => {
+    const h = harness(); h.toPhase('armed');
+    h.host.setPreviewSource('motion');
+    expect(h.host.getContext()).toMatchObject({ phase: 'adjust', selectedBallId: 'normal', previewShot: { aimDeg: 12, power01: 0.6 }, lockedShot: null });
+    h.send('ARM_SHOT', {}); h.send('FIRE', {});
+    expect(h.host.setPreviewSource('keyboard')).toBe(false);
+    expect(h.host.getContext().previewSource).toBe('motion');
+  });
 });
 
 describe('motion and keyboard sharing one host', () => {

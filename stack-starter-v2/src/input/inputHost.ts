@@ -1,5 +1,5 @@
 import defaults from '../shared/defaults.json';
-import type { CommandResult, CommandType, ControlCommand, ControlContext, InputSource, InteractionFeedback, MotionHost, Phase, PlayerId, ResultReason, ShotValues } from '../shared/contract';
+import type { CommandResult, CommandType, ControlCommand, ControlContext, InputSource, InteractionFeedback, MotionHost, Phase, PlayerId, ResultReason } from '../shared/contract';
 import { ballDefinitions, isBallType } from '../game/config/ballDefinitions';
 import { levels } from '../game/config/levels';
 import type { BallSnapshot, GameState, Mode, PhysicsPort, ShotRequest } from '../game/core/gameState';
@@ -69,7 +69,9 @@ export class InputHost implements MotionHost {
   onContext(listener: (context: ControlContext) => void): () => void {
     this.contextListeners.add(listener);
     this.publishing = true;
-    try { listener(this.getContext()); } finally { this.publishing = false; }
+    try { listener(this.getContext()); }
+    catch (error) { this.contextListeners.delete(listener); throw error; }
+    finally { this.publishing = false; }
     return () => this.contextListeners.delete(listener);
   }
   private publish(changedContext = true): void {

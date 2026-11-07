@@ -6,6 +6,8 @@
 **/__pycache__/
 .DS_Store
 Thumbs.db
+**/test-results/
+.local/
 .env
 .env.*
 !.env.example

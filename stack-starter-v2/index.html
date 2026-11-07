@@ -1,8 +1,2 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Flock and Flick 技术栈验证</title></head>
-<body><main>
-<header><span class="tag">Flock and Flick · 配置验证</span><h1>先确认工具能够一起工作</h1><p>本页面验证 Phaser、Matter、OpenCV Worker 和摄像头。它是开发起点，尚未包含正式关卡、库存或手势操作。</p></header>
-<section><h2>1　游戏与物理</h2><p>应看到八个圆球运动并碰撞。点击场地后，用方向键调整预览，Enter 锁定，Space 给第一球施加速度，Esc 解除锁定。</p><div id="game"></div><div class="bar"><button id="reset">重置八球</button><span id="physics-status">正在初始化 Phaser</span></div></section>
-<section><h2>2　视觉计算</h2><p>先测试合成图，无需摄像头。两个矩形的中心应接近 (70,120) 和 (250,120)。摄像头测试默认识别青色和品红色，正式项目仍需取色与校准。</p><div class="bar"><button id="synthetic">测试合成图</button><button id="camera">开启摄像头</button><button id="stop">停止视觉</button></div><p id="vision-status" role="status">等待测试</p><div class="vision-grid"><div><video id="video" autoplay muted playsinline></video><canvas id="sample" width="320" height="240"></canvas></div><pre id="vision-result">暂无识别结果</pre></div></section>
-<section><h2>3　下一步</h2><p>在终端运行 npm.cmd run typecheck、npm.cmd test 和 npm.cmd run build。真实手套效果、混合输入合同与完整游戏验收，按开发手册继续实现。</p><p class="small">退出或切换页面会停止本页摄像头轨道。所有图像只在当前浏览器中处理。</p></section>
-</main><script type="module" src="/src/main.ts"></script></body></html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f5ed"><meta name="description" content="让小鸟滑向圆心。单人五关与本地双人冰壶游戏。"><title>Flock & Flick · 小鸟冰上俱乐部</title><link rel="icon" type="image/svg+xml" href="/assets/bird.svg"></head><body><div id="app"></div><script type="module" src="/src/main.ts"></script></body></html>
