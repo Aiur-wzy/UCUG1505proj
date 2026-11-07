@@ -2,7 +2,7 @@ import defaults from '../../shared/defaults.json';
 import type { ShotValues } from '../../shared/contract';
 import type { BallSnapshot, Point } from '../core/gameState';
 
-export const clampShot = (shot: ShotValues): ShotValues => ({ aimDeg: Math.max(-50, Math.min(50, shot.aimDeg)), power01: Math.max(0, Math.min(1, shot.power01)) });
+export const clampShot = (shot: ShotValues): ShotValues => ({ aimDeg: Math.max(defaults.shotLimits.aimMinDeg, Math.min(defaults.shotLimits.aimMaxDeg, shot.aimDeg)), power01: Math.max(0, Math.min(1, shot.power01)) });
 export function launchVelocity(shot: ShotValues): Point {
   const angle = shot.aimDeg * Math.PI / 180;
   const speed = defaults.physics.launchSpeedMin + (defaults.physics.launchSpeedMax - defaults.physics.launchSpeedMin) * shot.power01;
@@ -46,8 +46,8 @@ export function predictPath(origin: Point, shot: ShotValues, balls: BallSnapshot
       }
       if (wall <= t) {
         points.push({ ...position }); bounces.push({ ...position });
-        if (wallX <= wall + 1e-8) velocity.x *= -defaults.physics.restitution;
-        if (wallY <= wall + 1e-8) velocity.y *= -defaults.physics.restitution;
+        if (wallX <= wall + 1e-8) velocity.x *= -defaults.physics.wallRestitution;
+        if (wallY <= wall + 1e-8) velocity.y *= -defaults.physics.wallRestitution;
         remaining *= 1 - t;
       } else remaining = 0;
     }

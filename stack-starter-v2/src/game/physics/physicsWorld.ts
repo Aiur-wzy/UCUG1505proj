@@ -27,6 +27,7 @@ export class PhysicsWorld implements PhysicsPort {
     scene.matter.world.setGravity(0, 0);
     const { width, height, walls } = defaults.world;
     scene.matter.world.setBounds(0, 0, width, height, walls.thickness, walls.left, walls.right, walls.top, walls.bottom);
+    for (const wall of Object.values(scene.matter.world.walls)) if (wall) wall.restitution = defaults.physics.wallRestitution;
     scene.matter.world.on('collisionstart', this.onCollision);
   }
   spawn(shot: ShotRequest): void {
@@ -62,14 +63,14 @@ export class PhysicsWorld implements PhysicsPort {
       if (!a || !b) continue; // Walls / future obstacles cannot become a sticky partner.
       const busy = (id: string) => this.links.has(id) || [...this.links.values()].some(link => link.targetId === id);
       if (busy(a.id) || busy(b.id)) continue;
-      const source = a.sticky?.phase === 'ready' ? a : b.sticky?.phase === 'ready' ? b : null;
+      // Only the bird being launched in this turn can originate a special effect.
+      const source = a.id === this.activeShot.shotId && a.sticky?.phase === 'ready' ? a
+        : b.id === this.activeShot.shotId && b.sticky?.phase === 'ready' ? b : null;
       if (!source) continue;
       const target = source === a ? b : a;
       const constraint = this.scene.matter.add.constraint(source.body, target.body, source.radius + target.radius,
         defaults.effects.sticky.stiffness, { damping: defaults.effects.sticky.damping, label: 'sticky-pair' });
       attachSticky(source.sticky!, target.id);
-      // When two fresh sticky birds meet, this single bond consumes both effects.
-      if (target.sticky?.phase === 'ready') attachSticky(target.sticky, source.id);
       this.links.set(source.id, { targetId: target.id, constraint });
       pair.restitution = 0;
       const mass = a.body.mass + b.body.mass;
@@ -108,10 +109,15 @@ export class PhysicsWorld implements PhysicsPort {
         ball.trail.push({ x: ball.x, y: ball.y });
         if (ball.trail.length > 20) ball.trail.shift();
       } else ball.trail.shift();
-      if (isOutOfPlay(ball)) { ball.inPlay = false; ball.trail = []; this.releaseLinksFor(ball.id); this.scene.matter.world.remove(ball.body); }
-      advanceEffect(ball.effect, isSlow(ball.body.speed, ball.body.angularSpeed), ball.inPlay, delta);
+      if (isOutOfPlay(ball)) {
+        ball.inPlay = false; ball.trail = []; this.releaseLinksFor(ball.id);
+        if (ball.sticky) finishSticky(ball.sticky);
+        this.scene.matter.world.remove(ball.body);
+      }
+      if (ball.id === this.activeShot?.shotId) advanceEffect(ball.effect, isSlow(ball.body.speed, ball.body.angularSpeed), ball.inPlay, delta);
+      else ball.effect.phase = 'done';
     }
-    for (const source of this.balls.filter(ball => ball.inPlay && ball.effect.phase === 'active')) {
+    for (const source of this.balls.filter(ball => ball.id === this.activeShot?.shotId && ball.inPlay && ball.effect.phase === 'active')) {
       for (const target of this.balls.filter(ball => ball.inPlay && ball !== source)) {
         const impulse = radialImpulse(source, target, source.effect.kind!);
         this.scene.matter.body.setVelocity(target.body, { x: target.body.velocity.x + impulse.x, y: target.body.velocity.y + impulse.y });
@@ -126,6 +132,11 @@ export class PhysicsWorld implements PhysicsPort {
     const done = this.settling.step(inPlay.every(ball => isSlow(ball.body.speed, ball.body.angularSpeed)), this.links.size === 0 && this.balls.every(ball => ball.effect.phase === 'done'), delta);
     if (done && this.activeShot) {
       for (const ball of inPlay) { this.scene.matter.body.setVelocity(ball.body, { x: 0, y: 0 }); this.scene.matter.body.setAngularVelocity(ball.body, 0); ball.trail = []; }
+      // Expire unused effects too: a missed sticky shot cannot catch a future visitor.
+      for (const ball of this.balls) {
+        ball.effect.phase = 'done';
+        if (ball.sticky) finishSticky(ball.sticky);
+      }
       const shot = this.activeShot; this.activeShot = null; this.accumulator = 0;
       this.onComplete(shot.sessionId, shot.shotId, this.snapshot());
     } else if (!this.warned && this.elapsed > defaults.physics.diagnosticTimeoutMs) {

@@ -50,8 +50,8 @@
         "previewShot": null,
         "lockedShot": null,
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -129,8 +129,8 @@
         },
         "lockedShot": null,
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -209,8 +209,8 @@
         },
         "lockedShot": null,
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -289,8 +289,8 @@
         },
         "lockedShot": null,
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -368,8 +368,8 @@
           "power01": 0.6
         },
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -471,8 +471,8 @@
           "power01": 0.6
         },
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -546,8 +546,8 @@
         },
         "lockedShot": null,
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -623,8 +623,8 @@
           "power01": 0.6
         },
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -698,8 +698,8 @@
         },
         "lockedShot": null,
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -778,8 +778,8 @@
           "power01": 0.6
         },
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -852,8 +852,8 @@
           "power01": 0.6
         },
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -922,8 +922,8 @@
         "previewShot": null,
         "lockedShot": null,
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -996,8 +996,8 @@
         },
         "lockedShot": null,
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -1312,8 +1312,8 @@
         },
         "lockedShot": null,
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -1390,8 +1390,8 @@
           "power01": 0.6
         },
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -1466,8 +1466,8 @@
           "power01": 0.6
         },
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }
@@ -1543,8 +1543,8 @@
         },
         "lockedShot": null,
         "limits": {
-          "aimMinDeg": -50,
-          "aimMaxDeg": 50,
+          "aimMinDeg": -90,
+          "aimMaxDeg": 90,
           "powerMin01": 0,
           "powerMax01": 1
         }

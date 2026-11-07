@@ -27,10 +27,17 @@ describe('authoritative commands', () => {
     h.host.getSnapshot().inventories.A.normal = 0;
     expect(h.host.getSnapshot().inventories.A.normal).toBe(1);
   });
-  it.each([NaN, Infinity, -Infinity, 51, -51])('rejects invalid angle %s', aimDeg => {
+  it.each([NaN, Infinity, -Infinity, 90.01, -90.01])('rejects invalid angle %s', aimDeg => {
     const h = harness(); h.toPhase('adjust');
     expect(h.send('PREVIEW_SHOT', { aimDeg, power01: 0.5 }).reason).toBe('INVALID_PAYLOAD');
     expect(h.shots).toHaveLength(0);
+  });
+  it.each([-90, -75, 75, 90])('accepts and freezes the expanded angle %s', aimDeg => {
+    const h = harness(); h.toPhase('adjust');
+    expect(h.host.getContext().limits).toMatchObject({ aimMinDeg: -90, aimMaxDeg: 90 });
+    expect(h.send('PREVIEW_SHOT', { aimDeg, power01: 1 }).accepted).toBe(true);
+    h.send('ARM_SHOT', {}); h.send('FIRE', {});
+    expect(h.shots[0]).toMatchObject({ aimDeg, power01: 1 });
   });
   it.each([NaN, Infinity, -0.1, 1.01])('rejects invalid power %s', power01 => {
     const h = harness(); h.toPhase('adjust');

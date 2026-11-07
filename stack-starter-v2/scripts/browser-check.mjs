@@ -77,6 +77,22 @@ try {
   await page.waitForFunction(() => document.querySelector('canvas')?.dataset.prediction === 'false');
   assert.deepEqual(await state(), beforeToggle);
   record('keys 3/4 select added types; debug-only prediction toggle changes no gameplay state');
+  assert.equal(await page.locator('#aim-range').getAttribute('min'), '-90');
+  assert.equal(await page.locator('#aim-range').getAttribute('max'), '90');
+  await page.locator('#aim-range').fill('90');
+  assert.equal((await state()).context.previewShot.aimDeg, 90);
+  await page.evaluate(() => window.__flockDebug.input.focus());
+  await page.keyboard.press('ArrowRight'); assert.equal((await state()).context.previewShot.aimDeg, 90);
+  await page.locator('#aim-range').fill('-90');
+  await page.evaluate(() => window.__flockDebug.input.focus());
+  await page.keyboard.press('ArrowLeft'); assert.equal((await state()).context.previewShot.aimDeg, -90);
+  const bounds = await page.locator('canvas').boundingBox();
+  await page.mouse.move(bounds.x + bounds.width - 10, bounds.y + bounds.height - 10);
+  assert.equal((await state()).context.previewShot.aimDeg, 90);
+  await page.mouse.move(bounds.x + 10, bounds.y + bounds.height - 10);
+  assert.equal((await state()).context.previewShot.aimDeg, -90);
+  await page.screenshot({ path: path.join(output, '08-wide-aim.png'), fullPage: true });
+  record('slider, arrow keys and pointer all reach the full -90° to +90° range');
   await start();
   await page.locator('[data-debug="ready"]').click(); await page.locator('[data-debug="select"]').click(); await page.locator('[data-debug="preview"]').click();
   let current = await state(); assert.deepEqual(current.context.previewShot, { aimDeg: 12, power01: 0.6 });
@@ -103,15 +119,15 @@ try {
   record('pause stops real Matter simulation and resumes the same throw');
 
   await start();
-  await shoot('normal', 0, 0.25);
+  await shoot('normal', 0, 0.11);
   const firstPosition = (await state()).balls[0];
-  await shoot('sticky', 0, 0.30);
+  await shoot('sticky', 0, 0.14);
   assert.ok(Math.hypot((await state()).balls[0].x - firstPosition.x, (await state()).balls[0].y - firstPosition.y) > 5);
   const stickyDone = await page.evaluate(() => window.__flockDebug.world.balls[1].sticky);
   assert.equal(stickyDone.phase, 'done'); assert.equal(stickyDone.activations, 1);
   record('settled birds remain dynamic and can be struck by later shots');
   for (const type of ['repel', 'attract']) {
-  await start(); await launch(type, 0, 0.25);
+  await start(); await launch(type, 0, 0.11);
   const effectLifecycle = await page.evaluate(() => {
     const d = window.__flockDebug, samples = [];
     let previous = '';
@@ -128,8 +144,9 @@ try {
   record(`pending and active ${type} effects block turn completion in real physics`, effectLifecycle);
   }
 
-  await start(); await shoot('normal', -8, 0.25);
-  await launch('attract', 8, 0.25);
+  for (const type of ['repel', 'attract']) {
+  await start(); await shoot('normal', -8, 0.11);
+  await launch(type, 8, 0.11);
   const pull = await page.evaluate(() => {
     const d = window.__flockDebug;
     let activation = null;
@@ -141,10 +158,11 @@ try {
     const distance = balls => Math.hypot(balls[0].x - balls[1].x, balls[0].y - balls[1].y);
     return { activation, end, before: distance(activation), after: distance(end) };
   });
-  assert.ok(pull.before - pull.after > 10);
-  record('attraction pulls a nearby settled bird closer in actual Matter simulation', pull);
+  assert.ok((pull.after - pull.before) * (type === 'repel' ? 1 : -1) > 10);
+  record(`${type} moves a nearby settled bird in the expected direction in actual Matter simulation`, pull);
+  }
 
-  await start(); await shoot('normal', 0, 0.25); await launch('sticky', 0, 0.30);
+  await start(); await shoot('normal', 0, 0.11); await launch('sticky', 0, 0.14);
   const bond = await page.evaluate(() => {
     const d = window.__flockDebug;
     for (let i = 0; i < 500 && d.world.balls[1].sticky.phase === 'ready'; i++) d.stepFrames(1);
@@ -158,11 +176,11 @@ try {
   assert.equal((await state()).context.phase, 'select');
   assert.equal(await page.evaluate(() => window.__flockDebug.world.balls[1].sticky.phase), 'done');
   assert.equal(await page.evaluate(() => window.__flockDebug.world.scene.matter.world.localWorld.constraints.length), 0);
-  await shoot('repel', 0, 0.30);
+  await shoot('repel', 0, 0.14);
   assert.equal(await page.evaluate(() => window.__flockDebug.world.balls[1].sticky.activations), 1);
   record('sticky first contact bonds a pair, survives pause, releases after settling and does not reactivate', bond);
 
-  await start(); await shoot('normal', 0, 0.25); await launch('sticky', 0, 0.30);
+  await start(); await shoot('normal', 0, 0.11); await launch('sticky', 0, 0.14);
   await page.evaluate(() => {
     const d = window.__flockDebug;
     for (let i = 0; i < 500 && d.world.balls[1].sticky.phase === 'ready'; i++) d.stepFrames(1);
@@ -172,8 +190,73 @@ try {
   assert.equal(await page.evaluate(() => window.__flockDebug.world.scene.matter.world.localWorld.bodies.length), 3);
   record('reset removes live sticky constraints and birds while retaining exactly three walls');
 
+  const retiredEffects = [];
+  for (const type of ['sticky', 'repel', 'attract']) {
+    await start(); await shoot(type, 0, 0.11);
+    const retired = await page.evaluate(() => {
+      const ball = window.__flockDebug.world.balls[0];
+      return { effect: { ...ball.effect }, sticky: ball.sticky && { ...ball.sticky }, position: { x: ball.x, y: ball.y } };
+    });
+    assert.equal(retired.effect.phase, 'done');
+    if (type === 'sticky') { assert.equal(retired.sticky.phase, 'done'); assert.equal(retired.sticky.activations, 0); }
+    await page.evaluate(() => {
+      const d = window.__flockDebug;
+      window.__effectRecheck = { contacts: 0 };
+      const onContact = event => {
+        const ids = d.world.balls.map(ball => ball.body.id);
+        window.__effectRecheck.contacts += event.pairs.filter(pair => ids.includes(pair.bodyA.id) && ids.includes(pair.bodyB.id)).length;
+      };
+      window.__effectRecheck.listener = onContact;
+      d.world.scene.matter.world.on('collisionstart', onContact);
+    });
+    await launch('normal', 0, 0.14);
+    const after = await page.evaluate(() => {
+      const d = window.__flockDebug;
+      let revived = false, links = 0;
+      for (let i = 0; i < 1200 && d.host.getContext().phase === 'resolving'; i++) {
+        d.stepFrames(1); const old = d.world.balls[0];
+        revived ||= old.effect.phase !== 'done' || !!(old.sticky && old.sticky.phase !== 'done');
+        links = Math.max(links, d.world.scene.matter.world.localWorld.constraints.length);
+      }
+      d.world.scene.matter.world.off('collisionstart', window.__effectRecheck.listener);
+      const old = d.world.balls[0];
+      return { contacts: window.__effectRecheck.contacts, revived, links, effect: old.effect, sticky: old.sticky, position: { x: old.x, y: old.y }, phase: d.host.getContext().phase };
+    });
+    assert.ok(after.contacts > 0); assert.equal(after.revived, false); assert.equal(after.links, 0);
+    assert.deepEqual(after.effect, retired.effect); assert.deepEqual(after.sticky, retired.sticky);
+    assert.ok(Math.hypot(after.position.x - retired.position.x, after.position.y - retired.position.y) > 5);
+    assert.equal(after.phase, 'select');
+    retiredEffects.push({ type, retired, after });
+  }
+  record('missed sticky and completed repel/attract remain inert when physically struck by a later normal shot', retiredEffects);
+
+  const damping = await page.evaluate(() => {
+    const d = window.__flockDebug, h = d.host, walls = Object.values(d.world.scene.matter.world.walls).filter(Boolean);
+    const configured = walls[0].restitution;
+    const sample = restitution => {
+      h.start('solo'); walls.forEach(wall => { wall.restitution = restitution; });
+      for (const [type, payload] of [['SELECT_BALL', { ballTypeId: 'normal' }], ['PREVIEW_SHOT', { aimDeg: 90, power01: 1 }], ['ARM_SHOT', {}], ['FIRE', {}]]) h.submit(h.command(type, payload));
+      const ball = d.world.balls[0], before = ball.body.speed;
+      d.stepFrames(1); const freeRatio = ball.body.speed / before;
+      let reflectionRatio = null;
+      for (let i = 0; i < 100; i++) {
+        const prior = ball.body.velocity.x; d.stepFrames(1);
+        if (prior > 0 && ball.body.velocity.x < 0) { reflectionRatio = -ball.body.velocity.x / prior; break; }
+      }
+      return { restitution, initialSpeed: before, freeRatio, reflectionRatio };
+    };
+    // Comparison fixture temporarily restores only the former wall coefficient.
+    // All subsequent checks use the actual current configuration again.
+    try { return { previousWall: sample(0.7), currentWall: sample(configured) }; }
+    finally { walls.forEach(wall => { wall.restitution = configured; }); }
+  });
+  assert.equal(damping.currentWall.initialSpeed, 35); assert.equal(damping.currentWall.restitution, 0.85);
+  assert.ok(Math.abs(damping.currentWall.freeRatio - 0.985) < 1e-6);
+  assert.ok(damping.currentWall.reflectionRatio > damping.previousWall.reflectionRatio + 0.1);
+  record('actual free-step speed retention is 98.5%; the 0.85 wall coefficient loses less speed than the previous 0.7', damping);
+
   const wallResults = [];
-  for (const [wall, aim] of [['top', 0], ['left', -50], ['right', 50]]) {
+  for (const [wall, aim] of [['top', 0], ['left', -90], ['right', 90]]) {
     await start(); await launch('normal', aim, 1);
     const result = await page.evaluate(wall => {
       const d = window.__flockDebug, axis = wall === 'top' ? 'y' : 'x';
@@ -185,15 +268,15 @@ try {
       }
       return { wall, reflected, minX, maxX, minY, ball: d.world.snapshot()[0], bodies: d.world.scene.matter.world.localWorld.bodies.length };
     }, wall);
-    assert.equal(result.reflected, true); assert.equal(result.ball.inPlay, true);
+    assert.equal(result.reflected, true); assert.equal(result.ball.inPlay, wall !== 'top');
     assert.ok(result.minX >= 16 && result.maxX <= 984 && result.minY >= 16);
-    assert.equal(result.bodies, 4); wallResults.push(result);
+    assert.equal(result.bodies, wall === 'top' ? 3 : 4); wallResults.push(result);
   }
-  record('maximum-power legal shots rebound off top, left and right walls without escape', wallResults);
+  record('35-speed shots rebound off three walls; ±90° stays horizontal and top rebound can leave the open bottom', wallResults);
   await start();
   const exit = await page.evaluate(() => {
     const d = window.__flockDebug;
-    // Deliberately constructed physics fixture, not a legal player throw (aim is normally ±50°).
+    // Deliberately constructed physics fixture, not a legal player throw (aim is normally ±90°).
     d.world.spawn({ sessionId: d.host.getContext().sessionId, shotId: 'bottom-exit-fixture', ownerId: 'A', typeId: 'normal', origin: { x: 500, y: 680 }, aimDeg: 180, power01: 1 });
     d.stepFrames(100);
     return { ball: d.world.snapshot()[0], bodies: d.world.scene.matter.world.localWorld.bodies.length };
@@ -205,7 +288,7 @@ try {
   for (let level = 0; level < 5; level++) {
     await start('solo', level);
     // A visible, reproducible set of legal shots; no injected positions or scores.
-    for (const [type, aim, power] of [['normal', -9, 0.25], ['attract', 0, 0.25], ['sticky', 9, 0.25], ['repel', 20, 0.24]]) await shoot(type, aim, power);
+    for (const [type, aim, power] of [['normal', -9, 0.11], ['attract', 0, 0.11], ['sticky', 9, 0.11], ['repel', 20, 0.10]]) await shoot(type, aim, power);
     current = await state();
     assert.equal(current.context.scene, 'result'); assert.equal(current.result.passed, true);
     soloResults.push({ level: level + 1, score: current.result.score.A, target: current.result.target, balls: current.balls });
@@ -213,7 +296,7 @@ try {
   record('five solo levels reachable in actual Matter world', soloResults);
   await page.screenshot({ path: path.join(output, '05-solo-result.png'), fullPage: true });
   await start();
-  for (const type of ['normal', 'repel', 'attract', 'sticky']) await shoot(type, 0, 0);
+  for (const type of ['normal', 'repel', 'attract', 'sticky']) await shoot(type, 90, 0);
   current = await state(); assert.equal(current.result.passed, false); assert.equal(current.result.score.A, 0);
   await page.locator('#result-overlay [data-action="retry"]').click();
   assert.equal((await state()).shotsTaken, 0);
@@ -225,7 +308,7 @@ try {
     const owners = [];
     for (let turn = 0; turn < 8; turn++) {
       owners.push((await state()).context.activePlayerId);
-      await shoot(['normal', 'repel', 'attract', 'sticky'][Math.floor(turn / 2)], [-8, 8, 0, -5, 5, 0, -12, 12][turn], 0.25);
+      await shoot(['normal', 'repel', 'attract', 'sticky'][Math.floor(turn / 2)], [-8, 8, 0, -5, 5, 0, -12, 12][turn], 0.11);
     }
     current = await state(); assert.equal(current.context.scene, 'result');
     assert.deepEqual(owners, Array.from({ length: 8 }, (_, i) => (i + match) % 2 === 0 ? 'A' : 'B'));

@@ -7,7 +7,7 @@ export type Phase = 'inactive' | 'select' | 'adjust' | 'armed' | 'resolving';
 export type CommandType = 'SELECT_BALL' | 'PREVIEW_SHOT' | 'ARM_SHOT' | 'FIRE' | 'CANCEL_SHOT';
 
 export interface ShotValues {
-  /** Degrees, 0 = up the field; positive = clockwise/right. Default range [-50, 50]. */
+  /** Degrees, 0 = up the field; positive = clockwise/right. Default range [-90, 90]. */
   aimDeg: number;
   /** Dimensionless [0, 1]. Converted to launch speed by the game, not the input module. */
   power01: number;

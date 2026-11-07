@@ -5,7 +5,7 @@ export function attachSticky(state: StickyState, targetId: string): boolean {
   if (state.phase !== 'ready' || state.activations >= defaults.effects.sticky.maxActivations) return false;
   state.phase = 'attached'; state.targetId = targetId; state.activations++; return true;
 }
-/** An unused sticky bird may settle normally and catch a later visitor. */
+/** Release an active bond; PhysicsWorld also expires unused effects at turn completion. */
 export function shouldReleaseSticky(state: StickyState, bothSlow: boolean, bothInPlay: boolean, delta: number): boolean {
   if (state.phase !== 'attached') return false;
   state.lowMs = bothSlow ? state.lowMs + delta : 0;

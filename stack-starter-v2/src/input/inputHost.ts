@@ -55,7 +55,7 @@ export class InputHost implements MotionHost {
       context: { protocolVersion: '1.1', sessionId: this.makeSession(), contextId: 0, turnId: 1,
         scene: 'menu', phase: 'inactive', activePlayerId: null, previewSource: 'keyboard', inputEnabled: false, motionEnabled: false,
         allowedCommands: [], motionActionsEnabled: defaults.defaultMotionActionsEnabled as CommandType[], ballOptions: [], selectedBallId: null,
-        previewShot: null, lockedShot: null, limits: { aimMinDeg: -50, aimMaxDeg: 50, powerMin01: 0, powerMax01: 1 } },
+        previewShot: null, lockedShot: null, limits: { ...defaults.shotLimits, powerMin01: 0, powerMax01: 1 } },
       mode: 'solo', levelIndex: 0, firstPlayer: 'A', inventories: initialInventories(), origin: null,
       balls: [], currentShotId: null, shotsTaken: 0, paused: false, result: null, feedback: null, diagnostic: null,
     };
@@ -232,7 +232,7 @@ export class InputHost implements MotionHost {
     if (!this.fresh(command.atMs, defaults.transport.maxSampleAgeMs)) return finish('STALE_INPUT');
     const payload = command.payload;
     if (command.type === 'PREVIEW_SHOT') {
-      if (Object.keys(payload).length !== 2 || !finite(command.payload.aimDeg) || !finite(command.payload.power01) || command.payload.aimDeg < -50 || command.payload.aimDeg > 50 || command.payload.power01 < 0 || command.payload.power01 > 1) return finish('INVALID_PAYLOAD');
+      if (Object.keys(payload).length !== 2 || !finite(command.payload.aimDeg) || !finite(command.payload.power01) || command.payload.aimDeg < c.limits.aimMinDeg || command.payload.aimDeg > c.limits.aimMaxDeg || command.payload.power01 < 0 || command.payload.power01 > 1) return finish('INVALID_PAYLOAD');
       if (command.atMs <= this.lastPreviewAt) return finish('STALE_INPUT');
       c.previewShot = { ...command.payload }; this.lastPreviewAt = command.atMs; this.previewContext = c.contextId;
       this.publish(false); return finish('OK');

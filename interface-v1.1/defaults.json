@@ -59,8 +59,8 @@
     "stepMs": 16.666666666666668,
     "maxCatchUpSteps": 5,
     "launchSpeedMin": 3,
-    "launchSpeedMax": 26,
-    "frictionAir": 0.02,
+    "launchSpeedMax": 35,
+    "frictionAir": 0.015,
     "restitution": 0.7,
     "gravityScale": 0,
     "settleLinearSpeed": 0.05,
@@ -69,14 +69,15 @@
     "diagnosticTimeoutMs": 20000,
     "provider": "Phaser.Physics.Matter",
     "autoUpdate": false,
-    "standaloneMatterRunner": false
+    "standaloneMatterRunner": false,
+    "wallRestitution": 0.85
   },
   "effects": {
     "repel": {
       "triggerLowSpeedMs": 200,
-      "durationMs": 250,
-      "radius": 120,
-      "deltaVelocityPerTick": 0.12,
+      "radius": 150,
+      "deltaVelocityPerTick": 0.16,
+      "durationMs": 350,
       "maxActivations": 1
     },
     "attract": {
@@ -237,9 +238,13 @@
     "keyboardDuelMatches": 3,
     "motionDuelMatches": 2
   },
-  "gameRulesVersion": "2.1",
+  "gameRulesVersion": "2.2",
   "defaultShot": {
     "aimDeg": 0,
-    "power01": 0.25
+    "power01": 0.11
+  },
+  "shotLimits": {
+    "aimMinDeg": -90,
+    "aimMaxDeg": 90
   }
 }
