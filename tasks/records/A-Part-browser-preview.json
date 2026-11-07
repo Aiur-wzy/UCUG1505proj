@@ -1,0 +1,466 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "browser": "156.0.4314.58",
+  "checks": [
+    {
+      "name": "production UI: live preview / freeze / cancel / one real-time shot",
+      "details": true
+    },
+    {
+      "name": "390px layout has no horizontal overflow",
+      "details": true
+    },
+    {
+      "name": "hybrid motion preview, keyboard confirms, loss-edge cancel, DOM focus and duplicate FIRE",
+      "details": true
+    },
+    {
+      "name": "pause stops real Matter simulation and resumes the same throw",
+      "details": true
+    },
+    {
+      "name": "settled birds remain dynamic and can be struck by later shots",
+      "details": true
+    },
+    {
+      "name": "pending and active repel effects block turn completion in real physics",
+      "details": {
+        "samples": [
+          {
+            "frame": 0,
+            "effect": "pending",
+            "phase": "resolving",
+            "turn": 1
+          },
+          {
+            "frame": 266,
+            "effect": "active",
+            "phase": "resolving",
+            "turn": 1
+          },
+          {
+            "frame": 281,
+            "effect": "done",
+            "phase": "resolving",
+            "turn": 1
+          }
+        ],
+        "context": {
+          "protocolVersion": "1.1",
+          "sessionId": "49d127e5-68cd-4094-8b78-51d6371a9305",
+          "contextId": 5,
+          "turnId": 2,
+          "scene": "play",
+          "phase": "select",
+          "activePlayerId": "A",
+          "previewSource": "keyboard",
+          "inputEnabled": true,
+          "motionEnabled": false,
+          "allowedCommands": [
+            "SELECT_BALL"
+          ],
+          "motionActionsEnabled": [
+            "SELECT_BALL",
+            "PREVIEW_SHOT"
+          ],
+          "ballOptions": [
+            {
+              "id": "normal",
+              "label": "普通球",
+              "remaining": 3
+            },
+            {
+              "id": "repel",
+              "label": "排斥球",
+              "remaining": 0
+            }
+          ],
+          "selectedBallId": null,
+          "previewShot": null,
+          "lockedShot": null,
+          "limits": {
+            "aimMinDeg": -50,
+            "aimMaxDeg": 50,
+            "powerMin01": 0,
+            "powerMax01": 1
+          }
+        },
+        "effect": {
+          "phase": "done",
+          "lowMs": 199.99999999999997,
+          "activeMs": 249.99999999999994,
+          "activations": 1
+        }
+      }
+    },
+    {
+      "name": "five solo levels reachable in actual Matter world",
+      "details": [
+        {
+          "level": 1,
+          "score": 9,
+          "target": 3,
+          "balls": [
+            {
+              "id": "1d16fc14-da86-4bcc-94dd-64fd5d70ebdc-shot-1",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 432.75848965497636,
+              "y": 185.45381221003643,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "1d16fc14-da86-4bcc-94dd-64fd5d70ebdc-shot-2",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 500,
+              "y": 180.16179057644968,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "1d16fc14-da86-4bcc-94dd-64fd5d70ebdc-shot-3",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 543.4431184161425,
+              "y": 176.04438695101464,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "1d16fc14-da86-4bcc-94dd-64fd5d70ebdc-shot-4",
+              "ownerId": "A",
+              "typeId": "repel",
+              "x": 644.0981192266946,
+              "y": 214.09367123874875,
+              "radius": 18,
+              "inPlay": true
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "score": 9,
+          "target": 4,
+          "balls": [
+            {
+              "id": "efc5db13-0d37-4003-840f-02031dddbc55-shot-1",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 432.75848965497636,
+              "y": 185.45381221003643,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "efc5db13-0d37-4003-840f-02031dddbc55-shot-2",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 500,
+              "y": 180.16179057644968,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "efc5db13-0d37-4003-840f-02031dddbc55-shot-3",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 543.4431184161425,
+              "y": 176.04438695101464,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "efc5db13-0d37-4003-840f-02031dddbc55-shot-4",
+              "ownerId": "A",
+              "typeId": "repel",
+              "x": 644.0981192266946,
+              "y": 214.09367123874875,
+              "radius": 18,
+              "inPlay": true
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "score": 9,
+          "target": 5,
+          "balls": [
+            {
+              "id": "296db478-643b-4882-9287-5729f77bf6d9-shot-1",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 432.75848965497636,
+              "y": 185.45381221003643,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "296db478-643b-4882-9287-5729f77bf6d9-shot-2",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 500,
+              "y": 180.16179057644968,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "296db478-643b-4882-9287-5729f77bf6d9-shot-3",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 543.4431184161425,
+              "y": 176.04438695101464,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "296db478-643b-4882-9287-5729f77bf6d9-shot-4",
+              "ownerId": "A",
+              "typeId": "repel",
+              "x": 644.0981192266946,
+              "y": 214.09367123874875,
+              "radius": 18,
+              "inPlay": true
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "score": 9,
+          "target": 6,
+          "balls": [
+            {
+              "id": "bbc1cdbe-a09e-4524-a5a5-fb3ecf43022a-shot-1",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 432.75848965497636,
+              "y": 185.45381221003643,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "bbc1cdbe-a09e-4524-a5a5-fb3ecf43022a-shot-2",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 500,
+              "y": 180.16179057644968,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "bbc1cdbe-a09e-4524-a5a5-fb3ecf43022a-shot-3",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 543.4431184161425,
+              "y": 176.04438695101464,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "bbc1cdbe-a09e-4524-a5a5-fb3ecf43022a-shot-4",
+              "ownerId": "A",
+              "typeId": "repel",
+              "x": 644.0981192266946,
+              "y": 214.09367123874875,
+              "radius": 18,
+              "inPlay": true
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "score": 9,
+          "target": 7,
+          "balls": [
+            {
+              "id": "8bed277c-90e9-4d8a-a48f-973a4afbdcff-shot-1",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 432.75848965497636,
+              "y": 185.45381221003643,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "8bed277c-90e9-4d8a-a48f-973a4afbdcff-shot-2",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 500,
+              "y": 180.16179057644968,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "8bed277c-90e9-4d8a-a48f-973a4afbdcff-shot-3",
+              "ownerId": "A",
+              "typeId": "normal",
+              "x": 543.4431184161425,
+              "y": 176.04438695101464,
+              "radius": 18,
+              "inPlay": true
+            },
+            {
+              "id": "8bed277c-90e9-4d8a-a48f-973a4afbdcff-shot-4",
+              "ownerId": "A",
+              "typeId": "repel",
+              "x": 644.0981192266946,
+              "y": 214.09367123874875,
+              "radius": 18,
+              "inPlay": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "out-of-play shots / solo failure / retry",
+      "details": true
+    },
+    {
+      "name": "three complete eight-throw duels, rematch starters and one-shot repel effects",
+      "details": [
+        {
+          "match": 1,
+          "owners": [
+            "A",
+            "B",
+            "A",
+            "B",
+            "A",
+            "B",
+            "A",
+            "B"
+          ],
+          "result": {
+            "score": {
+              "A": 1,
+              "B": 0
+            },
+            "winner": "A",
+            "passed": false,
+            "target": null
+          },
+          "effects": [
+            {
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            },
+            {
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            }
+          ]
+        },
+        {
+          "match": 2,
+          "owners": [
+            "B",
+            "A",
+            "B",
+            "A",
+            "B",
+            "A",
+            "B",
+            "A"
+          ],
+          "result": {
+            "score": {
+              "A": 0,
+              "B": 1
+            },
+            "winner": "B",
+            "passed": false,
+            "target": null
+          },
+          "effects": [
+            {
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            },
+            {
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            }
+          ]
+        },
+        {
+          "match": 3,
+          "owners": [
+            "A",
+            "B",
+            "A",
+            "B",
+            "A",
+            "B",
+            "A",
+            "B"
+          ],
+          "result": {
+            "score": {
+              "A": 1,
+              "B": 0
+            },
+            "winner": "A",
+            "passed": false,
+            "target": null
+          },
+          "effects": [
+            {
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            },
+            {
+              "phase": "done",
+              "lowMs": 199.99999999999997,
+              "activeMs": 249.99999999999994,
+              "activations": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "preserved local OpenCV Worker synthetic-image diagnostic",
+      "details": {
+        "anchor": [
+          {
+            "areaPx": 2400,
+            "cx": 69.5,
+            "cy": 119.5,
+            "x": 50,
+            "y": 90,
+            "width": 40,
+            "height": 60
+          }
+        ],
+        "guide": [
+          {
+            "areaPx": 2400,
+            "cx": 249.5,
+            "cy": 119.5,
+            "x": 230,
+            "y": 90,
+            "width": 40,
+            "height": 60
+          }
+        ]
+      }
+    },
+    {
+      "name": "no browser runtime errors",
+      "details": true
+    }
+  ],
+  "errors": []
+}
