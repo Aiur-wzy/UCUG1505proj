@@ -8,6 +8,7 @@ export default defineConfig({
     main: fileURLToPath(new URL('./index.html', import.meta.url)),
     game: fileURLToPath(new URL('./dev/game.html', import.meta.url)),
     stack: fileURLToPath(new URL('./dev/stack.html', import.meta.url)),
+    motion: fileURLToPath(new URL('./dev/motion.html', import.meta.url)),
   } } },
   test: { environment: 'node', include: ['tests/**/*.test.ts'] }
 });

@@ -12,6 +12,11 @@ let rgba:CvApi,rgb:CvApi,hsv:CvApi,mask:CvApi,temp:CvApi,low:CvApi,high:CvApi,la
 const send=(message:VisionResponse)=>scope.postMessage(message);
 function dispose(){for(const mat of mats)mat.delete();mats=[];}
 function configure(next:VisionConfig){
+  if(!Number.isInteger(next.width) || !Number.isInteger(next.height) || next.width<16 || next.height<16 || next.width>1280 || next.height>720 ||
+    !Number.isFinite(next.minAreaPx) || next.minAreaPx<1 || !Number.isFinite(next.maxAreaRatio) || next.maxAreaRatio<=0 || next.maxAreaRatio>1 ||
+    next.colors.length!==2 || next.colors[0].id!=='anchor' || next.colors[1].id!=='guide' || next.colors.some(c=>
+      ![c.hueDeg,c.halfWidthDeg,c.saturationMin,c.valueMin].every(Number.isFinite) || c.hueDeg<0 || c.hueDeg>=360 ||
+      c.halfWidthDeg<=0 || c.halfWidthDeg>=90 || c.saturationMin<0 || c.saturationMin>1 || c.valueMin<0 || c.valueMin>1))throw new Error('Invalid vision configuration');
   dispose();config=next;
   const {width:w,height:h}=config;
   canvas=new OffscreenCanvas(w,h);
@@ -71,7 +76,10 @@ scope.onmessage=async(event:MessageEvent<VisionRequest>)=>{
       context.drawImage(message.bitmap,0,0,config.width,config.height);
       rgba.data.set(context.getImageData(0,0,config.width,config.height).data);
       cv.cvtColor(rgba,rgb,cv.COLOR_RGBA2RGB);cv.cvtColor(rgb,hsv,cv.COLOR_RGB2HSV);
-      const candidates={anchor:detect(config.colors[0]),guide:detect(config.colors[1])};
+      const [a,b]=config.colors;
+      const anchor=detect(a);
+      const sameColor=a.hueDeg===b.hueDeg && a.halfWidthDeg===b.halfWidthDeg && a.saturationMin===b.saturationMin && a.valueMin===b.valueMin;
+      const candidates={anchor,guide:sameColor?anchor:detect(b)};
       send({kind:'RESULT',token:message.token,processingMs:performance.now()-started,candidates});
     }catch(error){send({kind:'ERROR',generation,frameId:message.token.frameId,code:'FRAME_FAILED',message:String(error)});}
     finally{message.bitmap.close();}

@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-08T07:38:47.807Z",
+  "base": "http://127.0.0.1:4173",
+  "checks": [
+    "red/green noisy RGBA frame -> real local OpenCV Worker; known centroids; no camera request",
+    "three continuous calibration samples per player; A/B profiles stay independent",
+    "neutral reacquisition + dwell selection + simultaneous angle/power preview without holding still",
+    "keyboard locks frozen values and fires; body motion never confirms or fires in phase one",
+    "player change clears readiness and requires the other player’s neutral pose",
+    "missing hand invalidates current motion lock once; keyboard remains usable while missing",
+    "two green components form two distinct hands, with one shared colour mask",
+    "local recalibration preserves colour settings; cancel preserves the previous valid profile",
+    "merged green hands, vertical crossing and ambiguous third green component all disable input",
+    "recovers under dense small noise and reduced brightness; maximum one frame in flight",
+    "motion lab and control panel fit a 390px viewport",
+    "three start/stop cycles close the pipeline and settle pending calibration",
+    "simulated camera permission denial reports CAMERA_DENIED without retry loops",
+    "synthetic MediaStream exercises video.play, camera frame capture and track shutdown (no physical camera)",
+    "A game loads B factory: synthetic pixels -> calibrated motion preview -> keyboard lock/fire -> real physics next turn",
+    "no browser runtime or HTTP errors"
+  ],
+  "errors": []
+}

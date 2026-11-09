@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Flock & Flick · 双手向量实验室</title><link rel="icon" href="/assets/bird.svg" type="image/svg+xml"></head>
+<body><header><div><small>FLOCK & FLICK / MOTION LAB</small><h1>让双手成为投掷向量</h1><p>红绿或双绿手套 → 图像识别 → 校准和平滑 → 实时方向与力度。先用有噪声的模拟窗口调试，再切换到真实摄像头。</p></div><a href="../index.html">返回游戏 ↗</a></header>
+<main><section class="lab-card"><div id="motion-mount"></div></section><aside class="lab-card"><h2>输入与游戏合同</h2><p id="lab-notice" role="status"></p><label><input id="calibrate-b" type="checkbox">也校准玩家 B（启动输入源前勾选）</label>
+<div class="lab-buttons"><button id="restart-lab">重开输入会话</button><button id="switch-source">切换键鼠 / 手套</button><button id="switch-player">切换玩家 A / B</button><button id="next-turn">下一投（模拟结算）</button></div>
+<canvas id="lab-vector" width="300" height="230" aria-label="当前投掷方向与力度示意"></canvas><p>箭头显示当前投掷参数；锁定后变为橙色。发射只由键鼠触发，本窗口不模拟游戏物理。</p>
+<div class="lab-buttons"><button data-command="SELECT_BALL">键鼠选普通球</button><button data-command="ARM_SHOT">锁定 · Enter</button><button data-command="FIRE">发射 · Space</button><button data-command="CANCEL_SHOT">取消 · Esc</button></div><pre id="lab-state"></pre></aside></main>
+<footer>模拟画面与摄像头共用本地 OpenCV Worker；模拟验证不代表真实光照、摄像头或手套已经验收。</footer><script type="module" src="/src/motion/dev/main.ts"></script></body></html>
